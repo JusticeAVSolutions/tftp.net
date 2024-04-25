@@ -8,16 +8,16 @@ static class TransferChannelFactory
 {
     public static ITransferChannel CreateServer(EndPoint localAddress)
     {
-        if (localAddress is IPEndPoint)
-            return CreateServerUdp((IPEndPoint)localAddress);
+        if (localAddress is IPEndPoint point)
+            return CreateServerUdp(point);
 
         throw new NotSupportedException("Unsupported endpoint type.");
     }
 
     public static ITransferChannel CreateConnection(EndPoint remoteAddress)
     {
-        if (remoteAddress is IPEndPoint)
-            return CreateConnectionUdp((IPEndPoint)remoteAddress);
+        if (remoteAddress is IPEndPoint point)
+            return CreateConnectionUdp(point);
 
         throw new NotSupportedException("Unsupported endpoint type.");
     }
@@ -26,14 +26,14 @@ static class TransferChannelFactory
 
     private static ITransferChannel CreateServerUdp(IPEndPoint localAddress)
     {
-        UdpClient socket = new UdpClient(localAddress);
+        var socket = new UdpClient(localAddress);
         return new UdpChannel(socket);
     }
 
     private static ITransferChannel CreateConnectionUdp(IPEndPoint remoteAddress)
     {
-        IPEndPoint localAddress = new IPEndPoint(IPAddress.Any, 0);
-        UdpChannel channel = new UdpChannel(new UdpClient(localAddress));
+        var localAddress = new IPEndPoint(IPAddress.Any, 0);
+        var channel = new UdpChannel(new UdpClient(localAddress));
         channel.RemoteEndpoint = remoteAddress;
         return channel;
     }

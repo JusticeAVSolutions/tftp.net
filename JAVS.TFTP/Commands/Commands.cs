@@ -30,9 +30,9 @@ abstract class ReadOrWriteRequest
         IEnumerable<TransferOption> options)
     {
         this.opCode = opCode;
-        this.Filename = filename;
-        this.Mode = mode;
-        this.Options = options;
+        Filename = filename;
+        Mode = mode;
+        Options = options;
     }
 }
 
@@ -40,7 +40,7 @@ class ReadRequest : ReadOrWriteRequest, ITftpCommand
 {
     public const ushort OpCode = 1;
 
-    public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
+    public ReadRequest(string filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
         : base(OpCode, filename, mode, options)
     {
     }
@@ -55,7 +55,7 @@ class WriteRequest : ReadOrWriteRequest, ITftpCommand
 {
     public const ushort OpCode = 2;
 
-    public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
+    public WriteRequest(string filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
         : base(OpCode, filename, mode, options)
     {
     }
@@ -75,8 +75,8 @@ class Data : ITftpCommand
 
     public Data(ushort blockNumber, byte[] data)
     {
-        this.BlockNumber = blockNumber;
-        this.Bytes = data;
+        BlockNumber = blockNumber;
+        Bytes = data;
     }
 
     public void Visit(ITftpCommandVisitor visitor)
@@ -93,7 +93,7 @@ class Acknowledgement : ITftpCommand
 
     public Acknowledgement(ushort blockNumber)
     {
-        this.BlockNumber = blockNumber;
+        BlockNumber = blockNumber;
     }
 
     public void Visit(ITftpCommandVisitor visitor)
@@ -107,12 +107,12 @@ class Error : ITftpCommand
     public const ushort OpCode = 5;
 
     public ushort ErrorCode { get; private set; }
-    public String Message { get; private set; }
+    public string Message { get; private set; }
 
-    public Error(ushort errorCode, String message)
+    public Error(ushort errorCode, string message)
     {
-        this.ErrorCode = errorCode;
-        this.Message = message;
+        ErrorCode = errorCode;
+        Message = message;
     }
 
     public void Visit(ITftpCommandVisitor visitor)
@@ -128,7 +128,7 @@ class OptionAcknowledgement : ITftpCommand
 
     public OptionAcknowledgement(IEnumerable<TransferOption> options)
     {
-        this.Options = options;
+        Options = options;
     }
 
     public void Visit(ITftpCommandVisitor visitor)

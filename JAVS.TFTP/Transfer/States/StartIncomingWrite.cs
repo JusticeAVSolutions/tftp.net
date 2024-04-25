@@ -20,7 +20,7 @@ class StartIncomingWrite : BaseState
     {
         //Do we have any acknowledged options?
         Context.FinishOptionNegotiation(Context.ProposedOptions);
-        List<TransferOption> options = Context.NegotiatedOptions.ToOptionList();
+        var options = Context.NegotiatedOptions.ToOptionList();
         if (options.Count > 0)
         {
             Context.SetState(new SendOptionAcknowledgementForWriteRequest());

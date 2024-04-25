@@ -11,7 +11,7 @@ class CancelledByUser : BaseState
 
     public override void OnStateEnter()
     {
-        Error command = new Error(reason.ErrorCode, reason.ErrorMessage);
+        var command = new Error(reason.ErrorCode, reason.ErrorMessage);
         Context.GetConnection().Send(command);
         Context.SetState(new Closed());
     }

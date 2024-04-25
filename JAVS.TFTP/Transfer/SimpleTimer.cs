@@ -18,7 +18,7 @@ class SimpleTimer
 
     public void Restart()
     {
-        this.nextTimeout = DateTime.Now.Add(timeout);
+        nextTimeout = DateTime.Now.Add(timeout);
     }
 
     public bool IsTimeout()

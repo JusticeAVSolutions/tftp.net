@@ -6,8 +6,8 @@ class Sending : StateThatExpectsMessagesFromDefaultEndPoint
 {
     private byte[] lastData;
     private ushort lastBlockNumber;
-    private long bytesSent = 0;
-    private bool lastPacketWasSent = false;
+    private long bytesSent;
+    private bool lastPacketWasSent;
 
     public override void OnStateEnter()
     {

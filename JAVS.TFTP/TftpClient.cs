@@ -57,23 +57,23 @@ public class TftpClient
     /// </summary>
     /// <param name="host">Hostname or ip to connect to</param>
     /// <param name="port">Port to connect to</param>
-    public TftpClient(String host, int port)
+    public TftpClient(string host, int port)
     {
         IPAddress ip = Dns.GetHostAddresses(host).FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
 
         if (ip == null)
-            throw new ArgumentException("Could not convert '" + host + "' to an IPv4 address.", "host");
+            throw new ArgumentException($"Could not convert '{host}' to an IPv4 address.", nameof(host));
 
-        this.remoteAddress = new IPEndPoint(ip, port);
+        remoteAddress = new IPEndPoint(ip, port);
     }
 
     /// <summary>
     /// GET a file from the server.
     /// You have to call Start() on the returned ITftpTransfer to start the transfer.
     /// </summary>
-    public ITftpTransfer Download(String filename)
+    public ITftpTransfer Download(string filename)
     {
-        ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+        var channel = TransferChannelFactory.CreateConnection(remoteAddress);
         return new RemoteReadTransfer(channel, filename);
     }
 
@@ -81,9 +81,9 @@ public class TftpClient
     /// PUT a file from the server.
     /// You have to call Start() on the returned ITftpTransfer to start the transfer.
     /// </summary>
-    public ITftpTransfer Upload(String filename)
+    public ITftpTransfer Upload(string filename)
     {
-        ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+        var channel = TransferChannelFactory.CreateConnection(remoteAddress);
         return new RemoteWriteTransfer(channel, filename);
     }
 }

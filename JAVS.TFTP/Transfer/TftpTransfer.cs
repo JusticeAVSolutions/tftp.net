@@ -21,15 +21,15 @@ class TftpTransfer : ITftpTransfer
 
     public TftpTransfer(ITransferChannel connection, String filename, ITransferState initialState)
     {
-        this.ProposedOptions = TransferOptionSet.NewDefaultSet();
-        this.Filename = filename;
-        this.RetryCount = 5;
-        this.SetState(initialState);
+        ProposedOptions = TransferOptionSet.NewDefaultSet();
+        Filename = filename;
+        RetryCount = 5;
+        SetState(initialState);
         this.connection = connection;
-        this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
-        this.connection.OnError += new TftpChannelErrorHandler(connection_OnError);
+        this.connection.OnCommandReceived += connection_OnCommandReceived;
+        this.connection.OnError += connection_OnError;
         this.connection.Open();
-        this.timer = new Timer(timer_OnTimer, null, 500, 500);
+        timer = new Timer(timer_OnTimer, null, 500, 500);
     }
 
     private void timer_OnTimer(object context)
@@ -82,20 +82,17 @@ class TftpTransfer : ITftpTransfer
 
     internal void RaiseOnProgress(long bytesTransferred)
     {
-        if (OnProgress != null)
-            OnProgress(this, new TftpTransferProgress(bytesTransferred, ExpectedSize));
+        OnProgress?.Invoke(this, new TftpTransferProgress(bytesTransferred, ExpectedSize));
     }
 
     internal void RaiseOnError(TftpTransferError error)
     {
-        if (OnError != null)
-            OnError(this, error);
+        OnError?.Invoke(this, error);
     }
 
     internal void RaiseOnFinished()
     {
-        if (OnFinished != null)
-            OnFinished(this);
+        OnFinished?.Invoke(this);
     }
 
     internal void FinishOptionNegotiation(TransferOptionSet negotiated)
@@ -108,10 +105,7 @@ class TftpTransfer : ITftpTransfer
             NegotiatedOptions.Timeout = TransferOptionSet.DEFAULT_TIMEOUT_SECS;
     }
 
-    public override string ToString()
-    {
-        return GetHashCode() + " (" + Filename + ")";
-    }
+    public override string ToString() => $"{GetHashCode()} ({Filename})";
 
     internal void FillOrDisableTransferSizeOption()
     {
@@ -135,19 +129,14 @@ class TftpTransfer : ITftpTransfer
     public event TftpEventHandler OnFinished;
     public event TftpErrorHandler OnError;
 
-    public string Filename { get; private set; }
+    public string Filename { get; }
     public int RetryCount { get; set; }
     public virtual TftpTransferMode TransferMode { get; set; }
     public object UserContext { get; set; }
 
     public virtual TimeSpan RetryTimeout
     {
-        get
-        {
-            return TimeSpan.FromSeconds(NegotiatedOptions != null
-                ? NegotiatedOptions.Timeout
-                : ProposedOptions.Timeout);
-        }
+        get => TimeSpan.FromSeconds(NegotiatedOptions?.Timeout ?? ProposedOptions.Timeout);
         set
         {
             ThrowExceptionIfTransferAlreadyStarted();
@@ -157,7 +146,7 @@ class TftpTransfer : ITftpTransfer
 
     public virtual long ExpectedSize
     {
-        get { return NegotiatedOptions != null ? NegotiatedOptions.TransferSize : ProposedOptions.TransferSize; }
+        get => NegotiatedOptions?.TransferSize ?? ProposedOptions.TransferSize;
         set
         {
             ThrowExceptionIfTransferAlreadyStarted();
@@ -167,7 +156,7 @@ class TftpTransfer : ITftpTransfer
 
     public virtual int BlockSize
     {
-        get { return NegotiatedOptions != null ? NegotiatedOptions.BlockSize : ProposedOptions.BlockSize; }
+        get => NegotiatedOptions?.BlockSize ?? ProposedOptions.BlockSize;
         set
         {
             ThrowExceptionIfTransferAlreadyStarted();
@@ -179,7 +168,7 @@ class TftpTransfer : ITftpTransfer
 
     public virtual BlockCounterWrapAround BlockCounterWrapping
     {
-        get { return wrapping; }
+        get => wrapping;
         set
         {
             ThrowExceptionIfTransferAlreadyStarted();
@@ -196,14 +185,11 @@ class TftpTransfer : ITftpTransfer
 
     public void Start(Stream data)
     {
-        if (data == null)
-            throw new ArgumentNullException("data");
-
         if (WasStarted)
             throw new InvalidOperationException("This transfer has already been started.");
 
-        this.WasStarted = true;
-        this.InputOutputStream = data;
+        WasStarted = true;
+        InputOutputStream = data ?? throw new ArgumentNullException(nameof(data));
 
         lock (this)
         {
@@ -214,7 +200,7 @@ class TftpTransfer : ITftpTransfer
     public void Cancel(TftpErrorPacket reason)
     {
         if (reason == null)
-            throw new ArgumentNullException("reason");
+            throw new ArgumentNullException(nameof(reason));
 
         lock (this)
         {

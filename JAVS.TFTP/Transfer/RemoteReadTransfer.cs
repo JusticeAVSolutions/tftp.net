@@ -13,11 +13,7 @@ class RemoteReadTransfer : TftpTransfer
 
     public override long ExpectedSize
     {
-        get { return base.ExpectedSize; }
-        set
-        {
-            throw new NotSupportedException(
-                "You cannot set the expected size of a file that is remotely transferred to this system.");
-        }
+        get => base.ExpectedSize;
+        set => throw new NotSupportedException("You cannot set the expected size of a file that is remotely transferred to this system.");
     }
 }

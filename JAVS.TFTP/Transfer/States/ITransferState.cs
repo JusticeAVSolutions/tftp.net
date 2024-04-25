@@ -13,7 +13,7 @@ interface ITransferState
     void OnStart();
     void OnCancel(TftpErrorPacket reason);
 
-    //Called regularely by the context
+    //Called regularly by the context
     void OnTimer();
 
     //Called when a command is received

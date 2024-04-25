@@ -20,7 +20,7 @@ class StartIncomingRead : BaseState
     {
         Context.FillOrDisableTransferSizeOption();
         Context.FinishOptionNegotiation(Context.ProposedOptions);
-        List<TransferOption> options = Context.NegotiatedOptions.ToOptionList();
+        var options = Context.NegotiatedOptions.ToOptionList();
         if (options.Count > 0)
         {
             Context.SetState(new SendOptionAcknowledgementForReadRequest());

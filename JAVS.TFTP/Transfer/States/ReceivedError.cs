@@ -11,10 +11,8 @@ class ReceivedError : BaseState
     {
     }
 
-    private static string GetNonEmptyErrorMessage(Error error)
-    {
-        return string.IsNullOrEmpty(error.Message) ? "(No error message provided)" : error.Message;
-    }
+    private static string GetNonEmptyErrorMessage(Error error) =>
+        string.IsNullOrEmpty(error.Message) ? "(No error message provided)" : error.Message;
 
     public ReceivedError(TftpTransferError error)
     {

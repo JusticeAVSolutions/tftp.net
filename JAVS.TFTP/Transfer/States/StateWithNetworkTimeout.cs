@@ -6,7 +6,7 @@ class StateWithNetworkTimeout : BaseState
 {
     private SimpleTimer timer;
     private ITftpCommand lastCommand;
-    private int retriesUsed = 0;
+    private int retriesUsed;
 
     public override void OnStateEnter()
     {

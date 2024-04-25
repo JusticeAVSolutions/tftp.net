@@ -13,7 +13,7 @@ class CommandSerializer
     /// </summary>
     public void Serialize(ITftpCommand command, Stream stream)
     {
-        CommandComposerVisitor visitor = new CommandComposerVisitor(stream);
+        var visitor = new CommandComposerVisitor(stream);
         command.Visit(visitor);
     }
 
@@ -23,7 +23,7 @@ class CommandSerializer
 
         public CommandComposerVisitor(Stream stream)
         {
-            this.writer = new TftpStreamWriter(stream);
+            writer = new TftpStreamWriter(stream);
         }
 
         private void OnReadOrWriteRequest(ReadOrWriteRequest command)

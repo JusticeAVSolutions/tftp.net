@@ -9,8 +9,8 @@ class LoggingStateDecorator : ITransferState
 {
     public TftpTransfer Context
     {
-        get { return decoratee.Context; }
-        set { decoratee.Context = value; }
+        get => decoratee.Context;
+        set => decoratee.Context = value;
     }
 
     private readonly ITransferState decoratee;
@@ -22,10 +22,7 @@ class LoggingStateDecorator : ITransferState
         this.transfer = transfer;
     }
 
-    public String GetStateName()
-    {
-        return "[" + decoratee.GetType().Name + "]";
-    }
+    public string GetStateName() => $"[{decoratee.GetType().Name}]";
 
     public void OnStateEnter()
     {

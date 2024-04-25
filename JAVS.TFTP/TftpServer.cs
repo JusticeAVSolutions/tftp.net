@@ -39,11 +39,11 @@ public class TftpServer : IDisposable
     public TftpServer(IPEndPoint localAddress)
     {
         if (localAddress == null)
-            throw new ArgumentNullException("localAddress");
+            throw new ArgumentNullException(nameof(localAddress));
 
         serverSocket = TransferChannelFactory.CreateServer(localAddress);
-        serverSocket.OnCommandReceived += new TftpCommandHandler(serverSocket_OnCommandReceived);
-        serverSocket.OnError += new TftpChannelErrorHandler(serverSocket_OnError);
+        serverSocket.OnCommandReceived += serverSocket_OnCommandReceived;
+        serverSocket.OnError += serverSocket_OnError;
     }
 
     public TftpServer(IPAddress localAddress)
@@ -75,7 +75,7 @@ public class TftpServer : IDisposable
         serverSocket.Open();
     }
 
-    void serverSocket_OnError(TftpTransferError error)
+    private void serverSocket_OnError(TftpTransferError error)
     {
         RaiseOnError(error);
     }
@@ -83,24 +83,23 @@ public class TftpServer : IDisposable
     private void serverSocket_OnCommandReceived(ITftpCommand command, EndPoint endpoint)
     {
         //Ignore all other commands
-        if (!(command is ReadOrWriteRequest))
+        if (command is not ReadOrWriteRequest request)
             return;
 
         //Open a connection to the client
-        ITransferChannel channel = TransferChannelFactory.CreateConnection(endpoint);
+        var channel = TransferChannelFactory.CreateConnection(endpoint);
 
         //Create a wrapper for the transfer request
-        ReadOrWriteRequest request = (ReadOrWriteRequest)command;
         ITftpTransfer transfer = request is ReadRequest
-            ? (ITftpTransfer)new LocalReadTransfer(channel, request.Filename, request.Options)
+            ? new LocalReadTransfer(channel, request.Filename, request.Options)
             : new LocalWriteTransfer(channel, request.Filename, request.Options);
 
-        if (command is ReadRequest)
+        if (request is ReadRequest)
             RaiseOnReadRequest(transfer, endpoint);
-        else if (command is WriteRequest)
+        else if (request is WriteRequest)
             RaiseOnWriteRequest(transfer, endpoint);
         else
-            throw new Exception("Unexpected tftp transfer request: " + command);
+            throw new Exception("Unexpected tftp transfer request: " + request);
     }
 
     #region IDisposable
@@ -114,8 +113,7 @@ public class TftpServer : IDisposable
 
     private void RaiseOnError(TftpTransferError error)
     {
-        if (OnError != null)
-            OnError(error);
+        OnError?.Invoke(error);
     }
 
     private void RaiseOnWriteRequest(ITftpTransfer transfer, EndPoint client)

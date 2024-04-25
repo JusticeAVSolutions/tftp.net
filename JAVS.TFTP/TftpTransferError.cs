@@ -7,7 +7,7 @@ namespace Tftp.Net;
 /// </summary>
 public abstract class TftpTransferError
 {
-    public abstract override String ToString();
+    public abstract override string ToString();
 }
 
 /// <summary>
@@ -19,36 +19,33 @@ public class TftpErrorPacket : TftpTransferError
     /// <summary>
     /// Error code that was sent from the other party.
     /// </summary>
-    public ushort ErrorCode { get; private set; }
+    public ushort ErrorCode { get; }
 
     /// <summary>
     /// Error description that was sent by the other party.
     /// </summary>
-    public string ErrorMessage { get; private set; }
+    public string ErrorMessage { get; }
 
     public TftpErrorPacket(ushort errorCode, string errorMessage)
     {
-        if (String.IsNullOrEmpty(errorMessage))
+        if (string.IsNullOrEmpty(errorMessage))
             throw new ArgumentException("You must provide an errorMessage.");
 
-        this.ErrorCode = errorCode;
-        this.ErrorMessage = errorMessage;
+        ErrorCode = errorCode;
+        ErrorMessage = errorMessage;
     }
 
-    public override string ToString()
-    {
-        return ErrorCode + " - " + ErrorMessage;
-    }
+    public override string ToString() => $"{ErrorCode} - {ErrorMessage}";
 
     #region Predefined error packets from RFC 1350
 
-    public static readonly TftpErrorPacket FileNotFound = new TftpErrorPacket(1, "File not found");
-    public static readonly TftpErrorPacket AccessViolation = new TftpErrorPacket(2, "Access violation");
-    public static readonly TftpErrorPacket DiskFull = new TftpErrorPacket(3, "Disk full or allocation exceeded");
-    public static readonly TftpErrorPacket IllegalOperation = new TftpErrorPacket(4, "Illegal TFTP operation");
-    public static readonly TftpErrorPacket UnknownTransferId = new TftpErrorPacket(5, "Unknown transfer ID");
-    public static readonly TftpErrorPacket FileAlreadyExists = new TftpErrorPacket(6, "File already exists");
-    public static readonly TftpErrorPacket NoSuchUser = new TftpErrorPacket(7, "No such user");
+    public static readonly TftpErrorPacket FileNotFound = new(1, "File not found");
+    public static readonly TftpErrorPacket AccessViolation = new(2, "Access violation");
+    public static readonly TftpErrorPacket DiskFull = new(3, "Disk full or allocation exceeded");
+    public static readonly TftpErrorPacket IllegalOperation = new(4, "Illegal TFTP operation");
+    public static readonly TftpErrorPacket UnknownTransferId = new(5, "Unknown transfer ID");
+    public static readonly TftpErrorPacket FileAlreadyExists = new(6, "File already exists");
+    public static readonly TftpErrorPacket NoSuchUser = new(7, "No such user");
 
     #endregion
 }
@@ -58,11 +55,11 @@ public class TftpErrorPacket : TftpTransferError
 /// </summary>
 public class NetworkError : TftpTransferError
 {
-    public Exception Exception { get; private set; }
+    public Exception Exception { get; }
 
     public NetworkError(Exception exception)
     {
-        this.Exception = exception;
+        Exception = exception;
     }
 
     public override string ToString()
@@ -81,13 +78,10 @@ public class TimeoutError : TftpTransferError
 
     public TimeoutError(TimeSpan retryTimeout, int retryCount)
     {
-        this.RetryTimeout = retryTimeout;
-        this.RetryCount = retryCount;
+        RetryTimeout = retryTimeout;
+        RetryCount = retryCount;
     }
 
-    public override string ToString()
-    {
-        return "Timeout error. RetryTimeout (" + RetryTimeout + ") violated more than " + RetryCount +
-               " times in a row";
-    }
+    public override string ToString() =>
+        $"Timeout error. RetryTimeout ({RetryTimeout}) violated more than {RetryCount} times in a row";
 }

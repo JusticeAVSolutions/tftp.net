@@ -7,26 +7,20 @@ class TransferOptionSet
     public const int DEFAULT_BLOCKSIZE = 512;
     public const int DEFAULT_TIMEOUT_SECS = 5;
 
-    public bool IncludesBlockSizeOption = false;
+    public bool IncludesBlockSizeOption;
     public int BlockSize = DEFAULT_BLOCKSIZE;
 
-    public bool IncludesTimeoutOption = false;
+    public bool IncludesTimeoutOption;
     public int Timeout = DEFAULT_TIMEOUT_SECS;
 
-    public bool IncludesTransferSizeOption = false;
-    public long TransferSize = 0;
+    public bool IncludesTransferSizeOption;
+    public long TransferSize;
 
-    public static TransferOptionSet NewDefaultSet()
-    {
-        return new TransferOptionSet()
-            { IncludesBlockSizeOption = true, IncludesTimeoutOption = true, IncludesTransferSizeOption = true };
-    }
+    public static TransferOptionSet NewDefaultSet() =>
+        new() { IncludesBlockSizeOption = true, IncludesTimeoutOption = true, IncludesTransferSizeOption = true };
 
-    public static TransferOptionSet NewEmptySet()
-    {
-        return new TransferOptionSet()
-            { IncludesBlockSizeOption = false, IncludesTimeoutOption = false, IncludesTransferSizeOption = false };
-    }
+    public static TransferOptionSet NewEmptySet() =>
+        new() { IncludesBlockSizeOption = false, IncludesTimeoutOption = false, IncludesTransferSizeOption = false };
 
     private TransferOptionSet()
     {
@@ -36,7 +30,7 @@ class TransferOptionSet
     {
         IncludesBlockSizeOption = IncludesTimeoutOption = IncludesTransferSizeOption = false;
 
-        foreach (TransferOption option in options)
+        foreach (var option in options)
         {
             Parse(option);
         }
@@ -62,7 +56,7 @@ class TransferOptionSet
 
     public List<TransferOption> ToOptionList()
     {
-        List<TransferOption> result = new List<TransferOption>();
+        List<TransferOption> result = [];
         if (IncludesBlockSizeOption)
             result.Add(new TransferOption("blksize", BlockSize.ToString()));
 
@@ -82,8 +76,7 @@ class TransferOptionSet
 
     private bool ParseTimeoutOption(string value)
     {
-        int timeout;
-        if (!int.TryParse(value, out timeout))
+        if (!int.TryParse(value, out var timeout))
             return false;
 
         //Only accept timeouts in the range [1, 255]
@@ -96,8 +89,7 @@ class TransferOptionSet
 
     private bool ParseBlockSizeOption(string value)
     {
-        int blockSize;
-        if (!int.TryParse(value, out blockSize))
+        if (!int.TryParse(value, out var blockSize))
             return false;
 
         //Only accept block sizes in the range [8, 65464]

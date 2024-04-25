@@ -2,9 +2,9 @@
 
 class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
 {
-    private ushort lastBlockNumber = 0;
+    private ushort lastBlockNumber;
     private ushort nextBlockNumber = 1;
-    private long bytesReceived = 0;
+    private long bytesReceived;
 
     public override void OnData(Data command)
     {
@@ -47,7 +47,7 @@ class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
 
     private void SendAcknowledgement(ushort blockNumber)
     {
-        Acknowledgement ack = new Acknowledgement(blockNumber);
+        var ack = new Acknowledgement(blockNumber);
         Context.GetConnection().Send(ack);
         ResetTimeout();
     }

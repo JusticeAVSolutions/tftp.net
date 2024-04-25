@@ -12,13 +12,13 @@ class UdpChannel : ITransferChannel
 
     private IPEndPoint endpoint;
     private UdpClient client;
-    private readonly CommandSerializer serializer = new CommandSerializer();
-    private readonly CommandParser parser = new CommandParser();
+    private readonly CommandSerializer serializer = new();
+    private readonly CommandParser parser = new();
 
     public UdpChannel(UdpClient client)
     {
         this.client = client;
-        this.endpoint = null;
+        endpoint = null;
     }
 
     public void Open()
@@ -29,14 +29,14 @@ class UdpChannel : ITransferChannel
         client.BeginReceive(UdpReceivedCallback, null);
     }
 
-    void UdpReceivedCallback(IAsyncResult result)
+    private void UdpReceivedCallback(IAsyncResult result)
     {
-        IPEndPoint endpoint = new IPEndPoint(0, 0);
+        var endpoint = new IPEndPoint(0, 0);
         ITftpCommand command = null;
 
         try
         {
-            byte[] data = null;
+            byte[] data;
 
             lock (this)
             {
@@ -73,14 +73,12 @@ class UdpChannel : ITransferChannel
 
     private void RaiseOnCommand(ITftpCommand command, IPEndPoint endpoint)
     {
-        if (OnCommandReceived != null)
-            OnCommandReceived(command, endpoint);
+        OnCommandReceived?.Invoke(command, endpoint);
     }
 
     private void RaiseOnError(TftpTransferError error)
     {
-        if (OnError != null)
-            OnError(error);
+        OnError?.Invoke(error);
     }
 
     public void Send(ITftpCommand command)
@@ -91,7 +89,7 @@ class UdpChannel : ITransferChannel
         if (endpoint == null)
             throw new InvalidOperationException("RemoteEndpoint needs to be set before you can send TFTP commands.");
 
-        using (MemoryStream stream = new MemoryStream())
+        using (var stream = new MemoryStream())
         {
             serializer.Serialize(command, stream);
             byte[] data = stream.GetBuffer();
@@ -103,27 +101,27 @@ class UdpChannel : ITransferChannel
     {
         lock (this)
         {
-            if (this.client == null)
+            if (client == null)
                 return;
 
             client.Close();
-            this.client = null;
+            client = null;
         }
     }
 
     public EndPoint RemoteEndpoint
     {
-        get { return endpoint; }
+        get => endpoint;
 
         set
         {
-            if (!(value is IPEndPoint))
+            if (value is not IPEndPoint point)
                 throw new NotSupportedException("UdpChannel can only connect to IPEndPoints.");
 
             if (client == null)
                 throw new ObjectDisposedException("UdpChannel");
 
-            this.endpoint = (IPEndPoint)value;
+            endpoint = point;
         }
     }
 }
