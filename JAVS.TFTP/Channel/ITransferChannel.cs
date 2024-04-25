@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Net;
 
-namespace Tftp.Net.Channel
+namespace Tftp.Net.Channel;
+
+delegate void TftpCommandHandler(ITftpCommand command, EndPoint endpoint);
+
+delegate void TftpChannelErrorHandler(TftpTransferError error);
+
+interface ITransferChannel : IDisposable
 {
-    delegate void TftpCommandHandler(ITftpCommand command, EndPoint endpoint);
-    delegate void TftpChannelErrorHandler(TftpTransferError error);
+    event TftpCommandHandler OnCommandReceived;
+    event TftpChannelErrorHandler OnError;
 
-    interface ITransferChannel : IDisposable
-    {
-        event TftpCommandHandler OnCommandReceived;
-        event TftpChannelErrorHandler OnError;
+    EndPoint RemoteEndpoint { get; set; }
 
-        EndPoint RemoteEndpoint { get; set; }
-
-        void Open();
-        void Send(ITftpCommand command);
-    }
+    void Open();
+    void Send(ITftpCommand command);
 }

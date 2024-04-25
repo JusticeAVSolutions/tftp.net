@@ -1,134 +1,138 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Tftp.Net
+namespace Tftp.Net;
+
+interface ITftpCommand
 {
-    interface ITftpCommand
+    void Visit(ITftpCommandVisitor visitor);
+}
+
+interface ITftpCommandVisitor
+{
+    void OnReadRequest(ReadRequest command);
+    void OnWriteRequest(WriteRequest command);
+    void OnData(Data command);
+    void OnAcknowledgement(Acknowledgement command);
+    void OnError(Error command);
+    void OnOptionAcknowledgement(OptionAcknowledgement command);
+}
+
+abstract class ReadOrWriteRequest
+{
+    private readonly ushort opCode;
+
+    public String Filename { get; private set; }
+    public TftpTransferMode Mode { get; private set; }
+    public IEnumerable<TransferOption> Options { get; private set; }
+
+    protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode,
+        IEnumerable<TransferOption> options)
     {
-        void Visit(ITftpCommandVisitor visitor);
+        this.opCode = opCode;
+        this.Filename = filename;
+        this.Mode = mode;
+        this.Options = options;
+    }
+}
+
+class ReadRequest : ReadOrWriteRequest, ITftpCommand
+{
+    public const ushort OpCode = 1;
+
+    public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
+        : base(OpCode, filename, mode, options)
+    {
     }
 
-    interface ITftpCommandVisitor
+    public void Visit(ITftpCommandVisitor visitor)
     {
-        void OnReadRequest(ReadRequest command);
-        void OnWriteRequest(WriteRequest command);
-        void OnData(Data command);
-        void OnAcknowledgement(Acknowledgement command);
-        void OnError(Error command);
-        void OnOptionAcknowledgement(OptionAcknowledgement command);
+        visitor.OnReadRequest(this);
+    }
+}
+
+class WriteRequest : ReadOrWriteRequest, ITftpCommand
+{
+    public const ushort OpCode = 2;
+
+    public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
+        : base(OpCode, filename, mode, options)
+    {
     }
 
-    abstract class ReadOrWriteRequest
+    public void Visit(ITftpCommandVisitor visitor)
     {
-        private readonly ushort opCode;
+        visitor.OnWriteRequest(this);
+    }
+}
 
-        public String Filename { get; private set; }
-        public TftpTransferMode Mode { get; private set; }
-        public IEnumerable<TransferOption> Options { get; private set; }
+class Data : ITftpCommand
+{
+    public const ushort OpCode = 3;
 
-        protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
-        {
-            this.opCode = opCode;
-            this.Filename = filename;
-            this.Mode = mode;
-            this.Options = options;
-        }
+    public ushort BlockNumber { get; private set; }
+    public byte[] Bytes { get; private set; }
+
+    public Data(ushort blockNumber, byte[] data)
+    {
+        this.BlockNumber = blockNumber;
+        this.Bytes = data;
     }
 
-    class ReadRequest : ReadOrWriteRequest, ITftpCommand
+    public void Visit(ITftpCommandVisitor visitor)
     {
-        public const ushort OpCode = 1;
+        visitor.OnData(this);
+    }
+}
 
-        public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
-            : base(OpCode, filename, mode, options) { }
+class Acknowledgement : ITftpCommand
+{
+    public const ushort OpCode = 4;
 
-        public void Visit(ITftpCommandVisitor visitor)
-        {
-            visitor.OnReadRequest(this);
-        }
+    public ushort BlockNumber { get; private set; }
+
+    public Acknowledgement(ushort blockNumber)
+    {
+        this.BlockNumber = blockNumber;
     }
 
-    class WriteRequest : ReadOrWriteRequest, ITftpCommand
+    public void Visit(ITftpCommandVisitor visitor)
     {
-        public const ushort OpCode = 2;
+        visitor.OnAcknowledgement(this);
+    }
+}
 
-        public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
-            : base(OpCode, filename, mode, options) { }
+class Error : ITftpCommand
+{
+    public const ushort OpCode = 5;
 
-        public void Visit(ITftpCommandVisitor visitor)
-        {
-            visitor.OnWriteRequest(this);
-        }
+    public ushort ErrorCode { get; private set; }
+    public String Message { get; private set; }
+
+    public Error(ushort errorCode, String message)
+    {
+        this.ErrorCode = errorCode;
+        this.Message = message;
     }
 
-    class Data : ITftpCommand
+    public void Visit(ITftpCommandVisitor visitor)
     {
-        public const ushort OpCode = 3;
+        visitor.OnError(this);
+    }
+}
 
-        public ushort BlockNumber { get; private set; }
-        public byte[] Bytes { get; private set; }
+class OptionAcknowledgement : ITftpCommand
+{
+    public const ushort OpCode = 6;
+    public IEnumerable<TransferOption> Options { get; private set; }
 
-        public Data(ushort blockNumber, byte[] data)
-        {
-            this.BlockNumber = blockNumber;
-            this.Bytes = data;
-        }
-
-        public void Visit(ITftpCommandVisitor visitor)
-        {
-            visitor.OnData(this);
-        }
+    public OptionAcknowledgement(IEnumerable<TransferOption> options)
+    {
+        this.Options = options;
     }
 
-    class Acknowledgement : ITftpCommand
+    public void Visit(ITftpCommandVisitor visitor)
     {
-        public const ushort OpCode = 4;
-
-        public ushort BlockNumber { get; private set; }
-
-        public Acknowledgement(ushort blockNumber)
-        {
-            this.BlockNumber = blockNumber;
-        }
-
-        public void Visit(ITftpCommandVisitor visitor)
-        {
-            visitor.OnAcknowledgement(this);
-        }
-    }
-
-    class Error : ITftpCommand
-    {
-        public const ushort OpCode = 5;
-
-        public ushort ErrorCode { get; private set; }
-        public String Message { get; private set; }
-
-        public Error(ushort errorCode, String message)
-        {
-            this.ErrorCode = errorCode;
-            this.Message = message;
-        }
-
-        public void Visit(ITftpCommandVisitor visitor)
-        {
-            visitor.OnError(this);
-        }
-    }
-
-    class OptionAcknowledgement : ITftpCommand
-    {
-        public const ushort OpCode = 6;
-        public IEnumerable<TransferOption> Options { get; private set; }
-
-        public OptionAcknowledgement(IEnumerable<TransferOption> options)
-        {
-            this.Options = options;
-        }
-
-        public void Visit(ITftpCommandVisitor visitor)
-        {
-            visitor.OnOptionAcknowledgement(this);
-        }
+        visitor.OnOptionAcknowledgement(this);
     }
 }

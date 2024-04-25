@@ -1,16 +1,15 @@
-﻿namespace Tftp.Net.Transfer.States
-{
-    class StartOutgoingWrite : BaseState
-    {
-        public override void OnStart()
-        {
-            Context.FillOrDisableTransferSizeOption();
-            Context.SetState(new SendWriteRequest());
-        }
+﻿namespace Tftp.Net.Transfer.States;
 
-        public override void OnCancel(TftpErrorPacket reason)
-        {
-            Context.SetState(new Closed());
-        }
+class StartOutgoingWrite : BaseState
+{
+    public override void OnStart()
+    {
+        Context.FillOrDisableTransferSizeOption();
+        Context.SetState(new SendWriteRequest());
+    }
+
+    public override void OnCancel(TftpErrorPacket reason)
+    {
+        Context.SetState(new Closed());
     }
 }

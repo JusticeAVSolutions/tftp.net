@@ -1,28 +1,27 @@
 ﻿using System;
 
-namespace Tftp.Net.Trace
+namespace Tftp.Net.Trace;
+
+/// <summary>
+/// Class that controls all tracing in the TFTP module.
+/// </summary>
+public static class TftpTrace
 {
     /// <summary>
-    /// Class that controls all tracing in the TFTP module.
+    /// Set this property to <code>false</code> to disable tracing.
     /// </summary>
-    public static class TftpTrace
+    public static bool Enabled { get; set; }
+
+    static TftpTrace()
     {
-        /// <summary>
-        /// Set this property to <code>false</code> to disable tracing.
-        /// </summary>
-        public static bool Enabled { get; set; }
+        Enabled = false;
+    }
 
-        static TftpTrace()
-        {
-            Enabled = false;
-        }
+    internal static void Trace(String message, ITftpTransfer transfer)
+    {
+        if (!Enabled)
+            return;
 
-        internal static void Trace(String message, ITftpTransfer transfer)
-        {
-            if (!Enabled)
-                return;
-
-            System.Diagnostics.Trace.WriteLine(message, transfer.ToString());
-        }
+        System.Diagnostics.Trace.WriteLine(message, transfer.ToString());
     }
 }

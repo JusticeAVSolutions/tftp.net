@@ -1,27 +1,26 @@
 ﻿using Tftp.Net.Transfer.States;
 
-namespace Tftp.Net.Transfer
+namespace Tftp.Net.Transfer;
+
+class SendOptionAcknowledgementBase : StateThatExpectsMessagesFromDefaultEndPoint
 {
-    class SendOptionAcknowledgementBase : StateThatExpectsMessagesFromDefaultEndPoint
+    public override void OnStateEnter()
     {
-        public override void OnStateEnter()
-        {
-            base.OnStateEnter();
-            SendAndRepeat(new OptionAcknowledgement(Context.NegotiatedOptions.ToOptionList()));
-        }
+        base.OnStateEnter();
+        SendAndRepeat(new OptionAcknowledgement(Context.NegotiatedOptions.ToOptionList()));
+    }
 
-        public override void OnError(Error command)
-        {
-            Context.SetState(new ReceivedError(command));
-        }
+    public override void OnError(Error command)
+    {
+        Context.SetState(new ReceivedError(command));
+    }
 
-        public override void OnCancel(TftpErrorPacket reason)
-        {
-            Context.SetState(new CancelledByUser(reason));
-        }
+    public override void OnCancel(TftpErrorPacket reason)
+    {
+        Context.SetState(new CancelledByUser(reason));
+    }
 
-        public override void OnOptionAcknowledgement(OptionAcknowledgement command)
-        {
-        }
+    public override void OnOptionAcknowledgement(OptionAcknowledgement command)
+    {
     }
 }

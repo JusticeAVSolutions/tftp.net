@@ -1,29 +1,28 @@
 ﻿using System;
 
-namespace Tftp.Net.Transfer
+namespace Tftp.Net.Transfer;
+
+/// <summary>
+/// Simple implementation of a timer.
+/// </summary>
+class SimpleTimer
 {
-    /// <summary>
-    /// Simple implementation of a timer.
-    /// </summary>
-    class SimpleTimer
+    private DateTime nextTimeout;
+    private readonly TimeSpan timeout;
+
+    public SimpleTimer(TimeSpan timeout)
     {
-        private DateTime nextTimeout;
-        private readonly TimeSpan timeout;
+        this.timeout = timeout;
+        Restart();
+    }
 
-        public SimpleTimer(TimeSpan timeout)
-        {
-            this.timeout = timeout;
-            Restart();
-        }
+    public void Restart()
+    {
+        this.nextTimeout = DateTime.Now.Add(timeout);
+    }
 
-        public void Restart()
-        {
-            this.nextTimeout = DateTime.Now.Add(timeout);
-        }
-
-        public bool IsTimeout()
-        {
-            return DateTime.Now >= nextTimeout;
-        }
+    public bool IsTimeout()
+    {
+        return DateTime.Now >= nextTimeout;
     }
 }

@@ -1,54 +1,53 @@
 ﻿using Tftp.Net.Trace;
 
-namespace Tftp.Net.Transfer.States
+namespace Tftp.Net.Transfer.States;
+
+class StateWithNetworkTimeout : BaseState
 {
-    class StateWithNetworkTimeout : BaseState
+    private SimpleTimer timer;
+    private ITftpCommand lastCommand;
+    private int retriesUsed = 0;
+
+    public override void OnStateEnter()
     {
-        private SimpleTimer timer;
-        private ITftpCommand lastCommand;
-        private int retriesUsed = 0;
+        timer = new SimpleTimer(Context.RetryTimeout);
+    }
 
-        public override void OnStateEnter()
+    public override void OnTimer()
+    {
+        if (timer.IsTimeout())
         {
-            timer = new SimpleTimer(Context.RetryTimeout);
-        }
-
-        public override void OnTimer()
-        {
-            if (timer.IsTimeout())
-            {
-                TftpTrace.Trace("Network timeout.", Context);
-                timer.Restart();
-
-                if (retriesUsed++ >= Context.RetryCount)
-                {
-                    TftpTransferError error = new TimeoutError(Context.RetryTimeout, Context.RetryCount);
-                    Context.SetState(new ReceivedError(error));
-                }
-                else
-                    HandleTimeout();
-            }
-        }
-
-        private void HandleTimeout()
-        {
-            if (lastCommand != null)
-            {
-                Context.GetConnection().Send(lastCommand);
-            }
-        }
-
-        protected void SendAndRepeat(ITftpCommand command)
-        {
-            Context.GetConnection().Send(command);
-            lastCommand = command;
-            ResetTimeout();
-        }
-
-        protected void ResetTimeout() 
-        {
+            TftpTrace.Trace("Network timeout.", Context);
             timer.Restart();
-            retriesUsed = 0;
+
+            if (retriesUsed++ >= Context.RetryCount)
+            {
+                TftpTransferError error = new TimeoutError(Context.RetryTimeout, Context.RetryCount);
+                Context.SetState(new ReceivedError(error));
+            }
+            else
+                HandleTimeout();
         }
+    }
+
+    private void HandleTimeout()
+    {
+        if (lastCommand != null)
+        {
+            Context.GetConnection().Send(lastCommand);
+        }
+    }
+
+    protected void SendAndRepeat(ITftpCommand command)
+    {
+        Context.GetConnection().Send(command);
+        lastCommand = command;
+        ResetTimeout();
+    }
+
+    protected void ResetTimeout()
+    {
+        timer.Restart();
+        retriesUsed = 0;
     }
 }

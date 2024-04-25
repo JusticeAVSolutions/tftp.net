@@ -2,19 +2,22 @@
 using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
 
-namespace Tftp.Net.Transfer
-{
-    class RemoteReadTransfer : TftpTransfer
-    {
-        public RemoteReadTransfer(ITransferChannel connection, String filename)
-            : base(connection, filename, new StartOutgoingRead())
-        {
-        }
+namespace Tftp.Net.Transfer;
 
-        public override long ExpectedSize
+class RemoteReadTransfer : TftpTransfer
+{
+    public RemoteReadTransfer(ITransferChannel connection, String filename)
+        : base(connection, filename, new StartOutgoingRead())
+    {
+    }
+
+    public override long ExpectedSize
+    {
+        get { return base.ExpectedSize; }
+        set
         {
-            get { return base.ExpectedSize; }
-            set { throw new NotSupportedException("You cannot set the expected size of a file that is remotely transferred to this system."); }
+            throw new NotSupportedException(
+                "You cannot set the expected size of a file that is remotely transferred to this system.");
         }
     }
 }

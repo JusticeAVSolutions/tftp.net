@@ -1,10 +1,9 @@
-﻿namespace Tftp.Net.Transfer.States
+﻿namespace Tftp.Net.Transfer.States;
+
+class Closed : BaseState
 {
-    class Closed : BaseState
+    public override void OnStateEnter()
     {
-        public override void OnStateEnter()
-        {
-            Context.Dispose();
-        }
+        Context.Dispose();
     }
 }
