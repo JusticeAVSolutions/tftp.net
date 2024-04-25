@@ -7,7 +7,7 @@ public class TransferOption_Test
     [Fact]
     public void CanBeCreatedWithValidNameAndValue()
     {
-        TransferOption option = new TransferOption("Test", "Hallo Welt");
+        var option = new TransferOption("Test", "Hallo Welt");
         Assert.Equal("Test", option.Name);
         Assert.Equal("Hallo Welt", option.Value);
         Assert.False(option.IsAcknowledged);
@@ -35,6 +35,6 @@ public class TransferOption_Test
     public void AcceptsEmptyValue()
     {
         //Must not throw any exceptions
-        TransferOption option = new TransferOption("Test", "");
+        var option = new TransferOption("Test", "");
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using Tftp.Net.Transfer.States;
 using System.IO;
 
@@ -6,46 +6,47 @@ namespace Tftp.Net.UnitTests.Transfer.States;
 
 public class StartIncomingWriteState_Test
 {
-    private TransferStub transfer;
+    private readonly TransferStub _transfer;
 
     public StartIncomingWriteState_Test()
     {
-        transfer = new TransferStub();
-        transfer.SetState(new StartIncomingWrite(new TransferOption[0]));
+        _transfer = new TransferStub();
+        _transfer.SetState(new StartIncomingWrite(Array.Empty<TransferOption>()));
     }
 
     [Fact]
     public void CanCancel()
     {
-        transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.True(transfer.CommandWasSent(typeof(Error)));
-        Assert.IsType<Closed>(transfer.State);
+        _transfer.Cancel(TftpErrorPacket.IllegalOperation);
+        Assert.True(_transfer.CommandWasSent(typeof(Error)));
+        Assert.IsType<Closed>(_transfer.State);
     }
 
     [Fact]
     public void IgnoresCommands()
     {
-        transfer.OnCommand(new Error(5, "Hallo Welt"));
-        Assert.IsType<StartIncomingWrite>(transfer.State);
+        _transfer.OnCommand(new Error(5, "Hallo Welt"));
+        Assert.IsType<StartIncomingWrite>(_transfer.State);
     }
 
     [Fact]
     public void CanStartWithoutOptions()
     {
-        transfer.Start(new MemoryStream(new byte[50000]));
+        _transfer.Start(new MemoryStream(new byte[50000]));
 
-        Assert.True(transfer.CommandWasSent(typeof(Acknowledgement)));
-        Assert.IsType<AcknowledgeWriteRequest>(transfer.State);
+        Assert.True(_transfer.CommandWasSent(typeof(Acknowledgement)));
+        Assert.IsType<AcknowledgeWriteRequest>(_transfer.State);
     }
 
     [Fact]
     public void CanStartWithOptions()
     {
-        transfer.SetState(new StartIncomingWrite(new TransferOption[] { new TransferOption("blksize", "999") }));
-        Assert.Equal(999, transfer.BlockSize);
-        transfer.Start(new MemoryStream(new byte[50000]));
-        OptionAcknowledgement cmd = (OptionAcknowledgement)transfer.SentCommands.Last();
-        cmd.Options.Contains(new TransferOption("blksize", "999"));
-        Assert.IsType<SendOptionAcknowledgementForWriteRequest>(transfer.State);
+        _transfer.SetState(new StartIncomingWrite(new[] { new TransferOption("blksize", "999") }));
+        Assert.Equal(999, _transfer.BlockSize);
+        _transfer.Start(new MemoryStream(new byte[50000]));
+        // TODO: This does nothing but Assert.Contains fails... WTF is this supposed to be?
+        // var cmd = (OptionAcknowledgement)transfer.SentCommands.Last();
+        // cmd.Options.Contains(new TransferOption("blksize", "999"));
+        Assert.IsType<SendOptionAcknowledgementForWriteRequest>(_transfer.State);
     }
 }

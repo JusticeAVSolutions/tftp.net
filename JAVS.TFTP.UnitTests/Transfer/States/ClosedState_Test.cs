@@ -4,25 +4,25 @@ namespace Tftp.Net.UnitTests;
 
 public class ClosedState_Test
 {
-    private TransferStub transfer;
+    private readonly TransferStub _transfer;
 
     public ClosedState_Test()
     {
-        transfer = new TransferStub();
-        transfer.SetState(new Closed());
+        _transfer = new TransferStub();
+        _transfer.SetState(new Closed());
     }
 
     [Fact]
     public void CanNotCancel()
     {
-        transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.IsType<Closed>(transfer.State);
+        _transfer.Cancel(TftpErrorPacket.IllegalOperation);
+        Assert.IsType<Closed>(_transfer.State);
     }
 
     [Fact]
     public void IgnoresCommands()
     {
-        transfer.OnCommand(new Error(10, "Test"));
-        Assert.IsType<Closed>(transfer.State);
+        _transfer.OnCommand(new Error(10, "Test"));
+        Assert.IsType<Closed>(_transfer.State);
     }
 }

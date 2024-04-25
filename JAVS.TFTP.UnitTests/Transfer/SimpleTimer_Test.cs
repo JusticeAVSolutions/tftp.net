@@ -9,7 +9,7 @@ public class SimpleTimer_Test
     [Fact]
     public void TimesOutWhenTimeoutIsReached()
     {
-        SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
+        var timer = new SimpleTimer(new TimeSpan(100));
         Assert.False(timer.IsTimeout());
         Thread.Sleep(200);
         Assert.True(timer.IsTimeout());
@@ -18,7 +18,7 @@ public class SimpleTimer_Test
     [Fact]
     public void RestartingResetsTimeout()
     {
-        SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
+        var timer = new SimpleTimer(new TimeSpan(100));
         Assert.False(timer.IsTimeout());
         Thread.Sleep(200);
         Assert.True(timer.IsTimeout());
@@ -29,7 +29,7 @@ public class SimpleTimer_Test
     [Fact]
     public void ImmediateTimeout()
     {
-        SimpleTimer timer = new SimpleTimer(new TimeSpan(0));
+        var timer = new SimpleTimer(new TimeSpan(0));
         Assert.True(timer.IsTimeout());
     }
 }

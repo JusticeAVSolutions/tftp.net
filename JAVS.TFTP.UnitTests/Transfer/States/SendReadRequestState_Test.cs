@@ -6,73 +6,73 @@ namespace Tftp.Net.UnitTests;
 
 public class SendReadRequestState_Test
 {
-    private MemoryStream ms;
-    private TransferStub transfer;
+    private readonly MemoryStream _ms;
+    private readonly TransferStub _transfer;
 
     public SendReadRequestState_Test()
     {
-        ms = new MemoryStream();
-        transfer = new TransferStub(ms);
-        transfer.SetState(new SendReadRequest());
+        _ms = new MemoryStream();
+        _transfer = new TransferStub(_ms);
+        _transfer.SetState(new SendReadRequest());
     }
 
     [Fact]
     public void CanCancel()
     {
-        transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.True(transfer.CommandWasSent(typeof(Error)));
-        Assert.IsType<Closed>(transfer.State);
+        _transfer.Cancel(TftpErrorPacket.IllegalOperation);
+        Assert.True(_transfer.CommandWasSent(typeof(Error)));
+        Assert.IsType<Closed>(_transfer.State);
     }
 
     [Fact]
     public void HandlesError()
     {
-        bool onErrorWasCalled = false;
-        transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error) { onErrorWasCalled = true; };
+        var onErrorWasCalled = false;
+        _transfer.OnError += delegate { onErrorWasCalled = true; };
 
         Assert.False(onErrorWasCalled);
-        transfer.OnCommand(new Error(123, "Test Error"));
+        _transfer.OnCommand(new Error(123, "Test Error"));
         Assert.True(onErrorWasCalled);
 
-        Assert.IsType<Closed>(transfer.State);
+        Assert.IsType<Closed>(_transfer.State);
     }
 
     [Fact]
     public void HandlesData()
     {
-        transfer.OnCommand(new Data(1, new byte[10]));
-        Assert.True(transfer.CommandWasSent(typeof(Acknowledgement)));
-        Assert.IsType<Closed>(transfer.State);
-        Assert.Equal(10, ms.Length);
+        _transfer.OnCommand(new Data(1, new byte[10]));
+        Assert.True(_transfer.CommandWasSent(typeof(Acknowledgement)));
+        Assert.IsType<Closed>(_transfer.State);
+        Assert.Equal(10, _ms.Length);
     }
 
     [Fact]
     public void HandlesOptionAcknowledgement()
     {
-        transfer.BlockSize = 999;
-        transfer.OnCommand(new OptionAcknowledgement(new TransferOption[] { new TransferOption("blksize", "999") }));
-        Assert.True(transfer.CommandWasSent(typeof(Acknowledgement)));
-        Assert.Equal(999, transfer.BlockSize);
+        _transfer.BlockSize = 999;
+        _transfer.OnCommand(new OptionAcknowledgement(new[] { new TransferOption("blksize", "999") }));
+        Assert.True(_transfer.CommandWasSent(typeof(Acknowledgement)));
+        Assert.Equal(999, _transfer.BlockSize);
     }
 
     [Fact]
     public void HandlesMissingOptionAcknowledgement()
     {
-        transfer.BlockSize = 999;
-        transfer.OnCommand(new Data(1, new byte[10]));
-        Assert.Equal(512, transfer.BlockSize);
+        _transfer.BlockSize = 999;
+        _transfer.OnCommand(new Data(1, new byte[10]));
+        Assert.Equal(512, _transfer.BlockSize);
     }
 
     [Fact]
     public void SendsRequest()
     {
-        Assert.True(transfer.CommandWasSent(typeof(ReadRequest)));
+        Assert.True(_transfer.CommandWasSent(typeof(ReadRequest)));
     }
 
     [Fact]
     public void ResendsRequest()
     {
-        TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream());
+        var transferWithLowTimeout = new TransferStub(new MemoryStream());
         transferWithLowTimeout.RetryTimeout = new TimeSpan(0);
         transferWithLowTimeout.SetState(new SendReadRequest());
 
@@ -86,7 +86,7 @@ public class SendReadRequestState_Test
     [Fact]
     public void TimeoutWhenNoAnswerIsReceivedAndRetryCountIsExceeded()
     {
-        TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
+        var transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
         transferWithLowTimeout.RetryTimeout = new TimeSpan(0);
         transferWithLowTimeout.RetryCount = 1;
         transferWithLowTimeout.SetState(new SendReadRequest());

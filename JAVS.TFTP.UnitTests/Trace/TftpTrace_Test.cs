@@ -8,7 +8,7 @@ public class TftpTrace_Test : IDisposable
 {
     private class TraceListenerMock : TraceListener
     {
-        public bool WriteWasCalled = false;
+        public bool WriteWasCalled;
 
         public override void Write(string message)
         {
@@ -21,7 +21,7 @@ public class TftpTrace_Test : IDisposable
         }
     }
 
-    private TraceListenerMock listener;
+    private readonly TraceListenerMock listener;
 
     public TftpTrace_Test()
     {

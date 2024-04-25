@@ -15,24 +15,18 @@ internal class TransferStub : TftpTransfer
     {
     }
 
-    private ChannelStub Channel
-    {
-        get { return (ChannelStub)connection; }
-    }
+    private ChannelStub Channel => (ChannelStub)connection;
 
-    public List<ITftpCommand> SentCommands
-    {
-        get { return Channel.SentCommands; }
-    }
+    public List<ITftpCommand> SentCommands => Channel.SentCommands;
 
     public bool HadNetworkTimeout { get; set; }
 
     public TransferStub(MemoryStream stream)
         : base(new ChannelStub(), "dummy.txt", new Uninitialized())
     {
-        base.InputOutputStream = stream;
+        InputOutputStream = stream;
         HadNetworkTimeout = false;
-        this.OnError += TransferStub_OnError;
+        OnError += TransferStub_OnError;
     }
 
     private void TransferStub_OnError(ITftpTransfer transfer, TftpTransferError error)
@@ -46,10 +40,7 @@ internal class TransferStub : TftpTransfer
     {
     }
 
-    public ITransferState State
-    {
-        get { return state; }
-    }
+    public ITransferState State => state;
 
     public void OnCommand(ITftpCommand command)
     {
@@ -74,7 +65,7 @@ internal class TransferStub : TftpTransfer
     public override void Dispose()
     {
         //Dont dispose the input/output stream during unit tests
-        this.InputOutputStream = null;
+        InputOutputStream = null;
 
         base.Dispose();
     }
@@ -85,7 +76,7 @@ internal class ChannelStub : ITransferChannel
     public event TftpCommandHandler OnCommandReceived;
     public event TftpChannelErrorHandler OnError;
     public EndPoint RemoteEndpoint { get; set; }
-    public readonly List<ITftpCommand> SentCommands = new List<ITftpCommand>();
+    public readonly List<ITftpCommand> SentCommands = [];
 
     public ChannelStub()
     {
@@ -98,14 +89,12 @@ internal class ChannelStub : ITransferChannel
 
     public void RaiseCommandReceived(ITftpCommand command, EndPoint endpoint)
     {
-        if (OnCommandReceived != null)
-            OnCommandReceived(command, endpoint);
+        OnCommandReceived?.Invoke(command, endpoint);
     }
 
     public void RaiseOnError(TftpTransferError error)
     {
-        if (OnError != null)
-            OnError(error);
+        OnError?.Invoke(error);
     }
 
     public void Send(ITftpCommand command)

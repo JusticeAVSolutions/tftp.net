@@ -4,23 +4,23 @@ namespace Tftp.Net.UnitTests;
 
 public class CancelledByUserState_Test
 {
-    private TransferStub transfer;
+    private readonly TransferStub _transfer;
 
     public CancelledByUserState_Test()
     {
-        transfer = new TransferStub();
-        transfer.SetState(new CancelledByUser(TftpErrorPacket.IllegalOperation));
+        _transfer = new TransferStub();
+        _transfer.SetState(new CancelledByUser(TftpErrorPacket.IllegalOperation));
     }
 
     [Fact]
     public void SendsErrorToClient()
     {
-        Assert.True(transfer.CommandWasSent(typeof(Error)));
+        Assert.True(_transfer.CommandWasSent(typeof(Error)));
     }
 
     [Fact]
     public void TransitionsToClosedState()
     {
-        Assert.IsType<Closed>(transfer.State);
+        Assert.IsType<Closed>(_transfer.State);
     }
 }

@@ -4,22 +4,22 @@ namespace Tftp.Net.UnitTests;
 
 public class ReceivedErrorState_Test
 {
-    private TransferStub transfer;
+    private readonly TransferStub _transfer;
 
     public ReceivedErrorState_Test()
     {
-        transfer = new TransferStub();
-        transfer.SetState(new ReceivedError(new TftpErrorPacket(123, "Error")));
+        _transfer = new TransferStub();
+        _transfer.SetState(new ReceivedError(new TftpErrorPacket(123, "Error")));
     }
 
     [Fact]
     public void CallsOnError()
     {
-        bool OnErrorWasCalled = false;
-        TransferStub transfer = new TransferStub();
+        var onErrorWasCalled = false;
+        var transfer = new TransferStub();
         transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error)
         {
-            OnErrorWasCalled = true;
+            onErrorWasCalled = true;
             Assert.Equal(transfer, t);
 
             Assert.IsType<TftpErrorPacket>(error);
@@ -28,14 +28,14 @@ public class ReceivedErrorState_Test
             Assert.Equal("My Error", ((TftpErrorPacket)error).ErrorMessage);
         };
 
-        Assert.False(OnErrorWasCalled);
+        Assert.False(onErrorWasCalled);
         transfer.SetState(new ReceivedError(new TftpErrorPacket(123, "My Error")));
-        Assert.True(OnErrorWasCalled);
+        Assert.True(onErrorWasCalled);
     }
 
     [Fact]
     public void TransitionsToClosed()
     {
-        Assert.IsType<Closed>(transfer.State);
+        Assert.IsType<Closed>(_transfer.State);
     }
 }
