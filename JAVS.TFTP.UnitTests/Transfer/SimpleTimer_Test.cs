@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Tftp.Net.Transfer;
 using System.Threading.Tasks;
 
@@ -7,20 +8,20 @@ namespace Tftp.Net.UnitTests.Transfer;
 public class SimpleTimer_Test
 {
     [Fact]
-    public async Task TimesOutWhenTimeoutIsReached()
+    public void TimesOutWhenTimeoutIsReached()
     {
         SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
         Assert.False(timer.IsTimeout());
-        await Task.Delay(200);
+        Thread.Sleep(200);
         Assert.True(timer.IsTimeout());
     }
 
     [Fact]
-    public async Task RestartingResetsTimeout()
+    public void RestartingResetsTimeout()
     {
         SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
         Assert.False(timer.IsTimeout());
-        await Task.Delay(200);
+        Thread.Sleep(200);
         Assert.True(timer.IsTimeout());
         timer.Restart();
         Assert.False(timer.IsTimeout());

@@ -31,9 +31,17 @@ Task("Build-Project")
             .TreatAllWarningsAs(MSBuildTreatAllWarningsAs.Error),
     }));
 
+Task("Run-Tests")
+    .IsDependentOn("Build-Project")
+    .Does(() => DotNetTest("JAVS.TFTP.UnitTests", new DotNetTestSettings
+    {
+        Configuration = config,
+    }));
+
 Task("Default")
     .IsDependentOn("Update-Version")
-    .IsDependentOn("Build-Project");
+    .IsDependentOn("Build-Project")
+    .IsDependentOn("Run-Tests");
 
 RunTarget(target);
 
