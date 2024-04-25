@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Tftp.Net.Transfer;
-using System.Threading.Tasks;
 
 namespace Tftp.Net.UnitTests.Transfer;
 
