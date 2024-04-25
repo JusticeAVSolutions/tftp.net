@@ -3,7 +3,7 @@ using JAVS.TFTP.Trace;
 
 namespace JAVS.TFTP.Transfer.States;
 
-class ReceivedError : BaseState
+internal class ReceivedError : BaseState
 {
     private readonly TftpTransferError _error;
 

@@ -4,7 +4,7 @@ using JAVS.TFTP.Commands;
 
 namespace JAVS.TFTP.Transfer.States;
 
-class StateThatExpectsMessagesFromDefaultEndPoint : StateWithNetworkTimeout, ITftpCommandVisitor
+internal class StateThatExpectsMessagesFromDefaultEndPoint : StateWithNetworkTimeout, ITftpCommandVisitor
 {
     public override void OnCommand(ITftpCommand command, EndPoint endpoint)
     {

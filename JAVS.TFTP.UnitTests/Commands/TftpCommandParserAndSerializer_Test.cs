@@ -20,9 +20,8 @@ public class TftpCommandParserAndSerializer_Test
     public void ParsesAck()
     {
         var original = new Acknowledgement(10);
-        var parser = new CommandParser();
 
-        var parsed = (Acknowledgement)parser.Parse(Serialize(original));
+        var parsed = (Acknowledgement)CommandParser.Parse(Serialize(original));
         Assert.Equal(original.BlockNumber, parsed.BlockNumber);
     }
 
@@ -30,9 +29,8 @@ public class TftpCommandParserAndSerializer_Test
     public void ParsesError()
     {
         var original = new Error(15, "Hallo Welt");
-        var parser = new CommandParser();
 
-        var parsed = (Error)parser.Parse(Serialize(original));
+        var parsed = (Error)CommandParser.Parse(Serialize(original));
         Assert.Equal(original.ErrorCode, parsed.ErrorCode);
         Assert.Equal(original.Message, parsed.Message);
     }
@@ -41,9 +39,8 @@ public class TftpCommandParserAndSerializer_Test
     public void ParsesReadRequest()
     {
         var original = new ReadRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
-        var parser = new CommandParser();
 
-        var parsed = (ReadRequest)parser.Parse(Serialize(original));
+        var parsed = (ReadRequest)CommandParser.Parse(Serialize(original));
         Assert.Equal(original.Filename, parsed.Filename);
         Assert.Equal(original.Mode, parsed.Mode);
     }
@@ -52,9 +49,8 @@ public class TftpCommandParserAndSerializer_Test
     public void ParsesWriteRequest()
     {
         var original = new WriteRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
-        var parser = new CommandParser();
 
-        var parsed = (WriteRequest)parser.Parse(Serialize(original));
+        var parsed = (WriteRequest)CommandParser.Parse(Serialize(original));
         Assert.Equal(original.Filename, parsed.Filename);
         Assert.Equal(original.Mode, parsed.Mode);
     }
@@ -64,9 +60,8 @@ public class TftpCommandParserAndSerializer_Test
     {
         byte[] data = [12, 15, 19, 0, 4];
         var original = new Data(123, data);
-        var parser = new CommandParser();
 
-        var parsed = (Data)parser.Parse(Serialize(original));
+        var parsed = (Data)CommandParser.Parse(Serialize(original));
         Assert.Equal(original.BlockNumber, parsed.BlockNumber);
         Assert.Equal(original.Bytes.Length, parsed.Bytes.Length);
 

@@ -3,7 +3,7 @@ using JAVS.TFTP.Commands;
 
 namespace JAVS.TFTP.Transfer.States;
 
-class Sending : StateThatExpectsMessagesFromDefaultEndPoint
+internal class Sending : StateThatExpectsMessagesFromDefaultEndPoint
 {
     private byte[] lastData;
     private ushort lastBlockNumber;

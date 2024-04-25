@@ -2,7 +2,7 @@
 
 namespace JAVS.TFTP.Transfer.States;
 
-class SendOptionAcknowledgementForWriteRequest : SendOptionAcknowledgementBase
+internal class SendOptionAcknowledgementForWriteRequest : SendOptionAcknowledgementBase
 {
     public override void OnData(Data command)
     {

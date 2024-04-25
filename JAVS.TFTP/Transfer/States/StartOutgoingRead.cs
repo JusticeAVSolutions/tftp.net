@@ -1,6 +1,6 @@
 ﻿namespace JAVS.TFTP.Transfer.States;
 
-class StartOutgoingRead : BaseState
+internal class StartOutgoingRead : BaseState
 {
     public override void OnStart()
     {

@@ -2,7 +2,7 @@
 
 namespace JAVS.TFTP.Transfer.States;
 
-class SendOptionAcknowledgementBase : StateThatExpectsMessagesFromDefaultEndPoint
+internal class SendOptionAcknowledgementBase : StateThatExpectsMessagesFromDefaultEndPoint
 {
     public override void OnStateEnter()
     {

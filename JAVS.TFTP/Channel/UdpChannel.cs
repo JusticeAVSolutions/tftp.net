@@ -11,10 +11,9 @@ internal class UdpChannel : ITransferChannel
     public event TftpCommandHandler OnCommandReceived;
     public event TftpChannelErrorHandler OnError;
 
+    private readonly CommandSerializer _serializer = new();
     private IPEndPoint _endpoint;
     private UdpClient _client;
-    private readonly CommandSerializer _serializer = new();
-    private readonly CommandParser _parser = new();
 
     public UdpChannel(UdpClient client)
     {
@@ -47,7 +46,7 @@ internal class UdpChannel : ITransferChannel
                 data = _client.EndReceive(result, ref endpoint);
             }
 
-            command = _parser.Parse(data);
+            command = CommandParser.Parse(data);
         }
         catch (SocketException e)
         {

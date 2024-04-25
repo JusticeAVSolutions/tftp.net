@@ -3,7 +3,7 @@ using JAVS.TFTP.Commands;
 
 namespace JAVS.TFTP.Transfer.States;
 
-class StartIncomingRead : BaseState
+internal class StartIncomingRead : BaseState
 {
     private readonly IEnumerable<TransferOption> _optionsRequestedByClient;
 

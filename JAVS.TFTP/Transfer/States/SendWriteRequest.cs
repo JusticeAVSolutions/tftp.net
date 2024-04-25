@@ -2,7 +2,7 @@
 
 namespace JAVS.TFTP.Transfer.States;
 
-class SendWriteRequest : StateWithNetworkTimeout
+internal class SendWriteRequest : StateWithNetworkTimeout
 {
     public override void OnStateEnter()
     {

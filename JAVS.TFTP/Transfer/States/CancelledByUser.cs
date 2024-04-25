@@ -2,7 +2,7 @@
 
 namespace JAVS.TFTP.Transfer.States;
 
-class CancelledByUser : BaseState
+internal class CancelledByUser : BaseState
 {
     private readonly TftpErrorPacket _reason;
 

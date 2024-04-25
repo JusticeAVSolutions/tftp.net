@@ -2,7 +2,7 @@
 
 namespace JAVS.TFTP.Transfer.States;
 
-class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
+internal class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
 {
     private ushort lastBlockNumber;
     private ushort nextBlockNumber = 1;

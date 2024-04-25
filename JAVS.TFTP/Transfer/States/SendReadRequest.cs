@@ -3,7 +3,7 @@ using JAVS.TFTP.Commands;
 
 namespace JAVS.TFTP.Transfer.States;
 
-class SendReadRequest : StateWithNetworkTimeout
+internal class SendReadRequest : StateWithNetworkTimeout
 {
     public override void OnStateEnter()
     {

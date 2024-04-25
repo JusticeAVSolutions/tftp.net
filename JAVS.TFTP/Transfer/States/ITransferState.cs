@@ -3,7 +3,7 @@ using JAVS.TFTP.Commands;
 
 namespace JAVS.TFTP.Transfer.States;
 
-interface ITransferState
+internal interface ITransferState
 {
     TftpTransfer Context { get; set; }
 

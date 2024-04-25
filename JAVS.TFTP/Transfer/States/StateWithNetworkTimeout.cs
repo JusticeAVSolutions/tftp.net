@@ -3,7 +3,7 @@ using JAVS.TFTP.Trace;
 
 namespace JAVS.TFTP.Transfer.States;
 
-class StateWithNetworkTimeout : BaseState
+internal class StateWithNetworkTimeout : BaseState
 {
     private SimpleTimer _timer;
     private ITftpCommand _lastCommand;

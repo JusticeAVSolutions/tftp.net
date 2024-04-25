@@ -1,6 +1,6 @@
 ﻿namespace JAVS.TFTP.Transfer.States;
 
-class Closed : BaseState
+internal class Closed : BaseState
 {
     public override void OnStateEnter()
     {

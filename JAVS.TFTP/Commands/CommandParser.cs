@@ -8,12 +8,12 @@ namespace JAVS.TFTP.Commands;
 /// <summary>
 /// Parses a ITftpCommand.
 /// </summary>
-internal class CommandParser
+internal static class CommandParser
 {
     /// <summary>
     /// Parses an ITftpCommand from the given byte array. If the byte array cannot be parsed for some reason, a TftpParserException is thrown.
     /// </summary>
-    public ITftpCommand Parse(byte[] message)
+    public static ITftpCommand Parse(byte[] message)
     {
         try
         {
