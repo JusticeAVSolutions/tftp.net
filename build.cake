@@ -1,4 +1,5 @@
-#addin nuget:?package=JAVS.Cake&version=4.0.0.3&loaddependencies=true
+using System.Text;
+using System.Text.RegularExpressions;
 
 var target = Argument("target", "Default");
 var config = Argument("config", "Release");
@@ -35,3 +36,35 @@ Task("Default")
     .IsDependentOn("Build-Project");
 
 RunTarget(target);
+
+void RegexReplaceInFile(string filePath, string searchText, string replaceText)
+{
+    var encoding = GetEncoding(filePath);
+
+    var oldContent = System.IO.File.ReadAllText(filePath, encoding);
+    var newContent = Regex.Replace(oldContent, searchText, replaceText);
+
+    System.IO.File.WriteAllText(filePath, newContent, encoding);
+}
+
+Encoding GetEncoding(string filePath)
+{
+    var bom = new byte[4];
+    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+    {
+        stream.Read(bom, 0, bom.Length);
+    }
+
+#pragma warning disable CS0618
+#pragma warning disable SYSLIB0001
+    if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
+#pragma warning restore SYSLIB0001
+#pragma warning restore CS0618
+    if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+    if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+    if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+    if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
+
+    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    return Encoding.GetEncoding(1252);
+}
