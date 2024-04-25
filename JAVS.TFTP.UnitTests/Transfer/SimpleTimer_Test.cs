@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Threading;
-using Tftp.Net.Transfer;
+using JAVS.TFTP.Transfer;
 
-namespace Tftp.Net.UnitTests.Transfer;
+namespace JAVS.TFTP.UnitTests.Transfer;
 
 public class SimpleTimer_Test
 {
     [Fact]
     public void TimesOutWhenTimeoutIsReached()
     {
-        var timer = new SimpleTimer(new TimeSpan(100));
+        var timer = new SimpleTimer(new TimeSpan(500));
         Assert.False(timer.IsTimeout());
-        Thread.Sleep(200);
+        Thread.Sleep(1000);
         Assert.True(timer.IsTimeout());
     }
 
     [Fact]
     public void RestartingResetsTimeout()
     {
-        var timer = new SimpleTimer(new TimeSpan(100));
+        var timer = new SimpleTimer(new TimeSpan(500));
         Assert.False(timer.IsTimeout());
-        Thread.Sleep(200);
+        Thread.Sleep(1000);
         Assert.True(timer.IsTimeout());
         timer.Restart();
         Assert.False(timer.IsTimeout());

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net;
-using Tftp.Net.Channel;
-using Tftp.Net.Transfer;
+using JAVS.TFTP.Channel;
+using JAVS.TFTP.Commands;
+using JAVS.TFTP.Transfer;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP;
 
 public delegate void TftpServerEventHandler(ITftpTransfer transfer, EndPoint client);
 

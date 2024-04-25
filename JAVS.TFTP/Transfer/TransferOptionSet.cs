@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.Transfer;
+namespace JAVS.TFTP.Transfer;
 
 class TransferOptionSet
 {

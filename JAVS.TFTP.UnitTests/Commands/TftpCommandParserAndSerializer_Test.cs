@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.UnitTests;
+namespace JAVS.TFTP.UnitTests.Commands;
 
 public class TftpCommandParserAndSerializer_Test
 {

@@ -1,9 +1,9 @@
-﻿using System;
-using Tftp.Net.Transfer.States;
-using System.Net;
-using Tftp.Net.Transfer;
+﻿using System.Net;
+using JAVS.TFTP.Commands;
+using JAVS.TFTP.Transfer;
+using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.Trace;
+namespace JAVS.TFTP.Trace;
 
 class LoggingStateDecorator : ITransferState
 {

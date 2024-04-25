@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using Tftp.Net.Transfer.States;
-using Tftp.Net.Channel;
 using System.Threading;
-using Tftp.Net.Trace;
+using JAVS.TFTP.Channel;
+using JAVS.TFTP.Commands;
+using JAVS.TFTP.Trace;
+using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.Transfer;
+namespace JAVS.TFTP.Transfer;
 
 class TftpTransfer : ITftpTransfer
 {

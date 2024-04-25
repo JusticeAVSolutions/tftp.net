@@ -1,8 +1,8 @@
 ﻿using System;
-using Tftp.Net.Transfer.States;
-using Tftp.Net.Channel;
+using JAVS.TFTP.Channel;
+using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.Transfer;
+namespace JAVS.TFTP.Transfer;
 
 class RemoteReadTransfer : TftpTransfer
 {

@@ -1,4 +1,4 @@
-﻿namespace Tftp.Net;
+﻿namespace JAVS.TFTP;
 
 public class TftpTransferProgress
 {

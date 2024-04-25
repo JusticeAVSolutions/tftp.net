@@ -1,4 +1,6 @@
-﻿namespace Tftp.Net.UnitTests;
+﻿using JAVS.TFTP.Commands;
+
+namespace JAVS.TFTP.UnitTests.Commands;
 
 public class TftpCommand_Test
 {

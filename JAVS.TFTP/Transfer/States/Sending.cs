@@ -1,6 +1,7 @@
 ﻿using System;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.Transfer.States;
+namespace JAVS.TFTP.Transfer.States;
 
 class Sending : StateThatExpectsMessagesFromDefaultEndPoint
 {

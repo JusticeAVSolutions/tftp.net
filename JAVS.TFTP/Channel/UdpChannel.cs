@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Net.Sockets;
-using System.Net;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.Channel;
+namespace JAVS.TFTP.Channel;
 
 class UdpChannel : ITransferChannel
 {

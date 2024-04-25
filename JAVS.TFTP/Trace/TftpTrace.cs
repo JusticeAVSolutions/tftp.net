@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tftp.Net.Trace;
+﻿namespace JAVS.TFTP.Trace;
 
 /// <summary>
 /// Class that controls all tracing in the TFTP module.

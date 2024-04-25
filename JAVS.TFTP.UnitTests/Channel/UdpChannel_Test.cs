@@ -1,10 +1,11 @@
 ﻿using System;
-using Tftp.Net.Channel;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
+using JAVS.TFTP.Channel;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.UnitTests;
+namespace JAVS.TFTP.UnitTests.Channel;
 
 public sealed class UdpChannel_Test : IDisposable
 {

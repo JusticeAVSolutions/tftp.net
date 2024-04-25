@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP.Commands;
 
 class TftpStreamReader
 {

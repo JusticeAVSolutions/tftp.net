@@ -1,4 +1,4 @@
-﻿namespace Tftp.Net.Transfer.States;
+﻿namespace JAVS.TFTP.Transfer.States;
 
 class Closed : BaseState
 {

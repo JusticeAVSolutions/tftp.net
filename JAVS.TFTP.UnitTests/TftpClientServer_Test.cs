@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using System.Threading;
 using System.Net;
+using System.Threading;
 
-namespace Tftp.Net.UnitTests;
+namespace JAVS.TFTP.UnitTests;
 
 public sealed class TftpClientServer_Test
 {

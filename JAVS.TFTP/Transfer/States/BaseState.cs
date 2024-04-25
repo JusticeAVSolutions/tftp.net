@@ -1,6 +1,7 @@
 ﻿using System.Net;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.Transfer.States;
+namespace JAVS.TFTP.Transfer.States;
 
 class BaseState : ITransferState
 {

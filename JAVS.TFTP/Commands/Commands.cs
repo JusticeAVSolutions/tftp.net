@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP.Commands;
 
 interface ITftpCommand
 {

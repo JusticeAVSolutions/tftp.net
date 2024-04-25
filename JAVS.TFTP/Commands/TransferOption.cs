@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP.Commands;
 
 /// <summary>
 /// A single transfer options according to RFC2347.

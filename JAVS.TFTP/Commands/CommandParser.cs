@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP.Commands;
 
 /// <summary>
 /// Parses a ITftpCommand.

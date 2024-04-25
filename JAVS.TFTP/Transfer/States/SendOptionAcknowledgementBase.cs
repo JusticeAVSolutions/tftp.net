@@ -1,6 +1,6 @@
-﻿using Tftp.Net.Transfer.States;
+﻿using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.Transfer;
+namespace JAVS.TFTP.Transfer.States;
 
 class SendOptionAcknowledgementBase : StateThatExpectsMessagesFromDefaultEndPoint
 {

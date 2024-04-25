@@ -1,8 +1,9 @@
 ﻿using System;
-using Tftp.Net.Transfer.States;
 using System.IO;
+using JAVS.TFTP.Commands;
+using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.UnitTests.Transfer.States;
+namespace JAVS.TFTP.UnitTests.Transfer.States;
 
 public class StartIncomingWriteState_Test
 {

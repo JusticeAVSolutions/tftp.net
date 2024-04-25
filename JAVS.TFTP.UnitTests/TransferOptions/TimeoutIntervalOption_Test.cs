@@ -1,6 +1,7 @@
-﻿using Tftp.Net.Transfer;
+﻿using JAVS.TFTP.Commands;
+using JAVS.TFTP.Transfer;
 
-namespace Tftp.Net.UnitTests.TransferOptions;
+namespace JAVS.TFTP.UnitTests.TransferOptions;
 
 public class TimeoutIntervalOption_Test
 {

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Tftp.Net.Transfer.States;
-using Tftp.Net.Channel;
+using JAVS.TFTP.Channel;
+using JAVS.TFTP.Commands;
+using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.Transfer;
+namespace JAVS.TFTP.Transfer;
 
 class LocalWriteTransfer : TftpTransfer
 {

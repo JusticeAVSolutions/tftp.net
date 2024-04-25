@@ -1,6 +1,7 @@
-﻿using Tftp.Net.Trace;
+﻿using JAVS.TFTP.Commands;
+using JAVS.TFTP.Trace;
 
-namespace Tftp.Net.Transfer.States;
+namespace JAVS.TFTP.Transfer.States;
 
 class ReceivedError : BaseState
 {

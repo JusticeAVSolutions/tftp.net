@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Tftp.Net.Transfer;
-using Tftp.Net.Transfer.States;
-using Tftp.Net.Channel;
-using System.Net;
 using System.IO;
+using System.Linq;
+using System.Net;
+using JAVS.TFTP.Channel;
+using JAVS.TFTP.Commands;
+using JAVS.TFTP.Transfer;
+using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.UnitTests;
+namespace JAVS.TFTP.UnitTests.Transfer.States;
 
 internal class TransferStub : TftpTransfer
 {

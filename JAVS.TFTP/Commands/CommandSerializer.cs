@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP.Commands;
 
 /// <summary>
 /// Serializes an ITftpCommand into a stream of bytes.

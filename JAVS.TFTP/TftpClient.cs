@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Tftp.Net.Channel;
-using Tftp.Net.Transfer;
+using JAVS.TFTP.Channel;
+using JAVS.TFTP.Transfer;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP;
 
 /// <summary>
 /// A TFTP client that can connect to a TFTP server.

@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace Tftp.Net.Channel;
+namespace JAVS.TFTP.Channel;
 
 static class TransferChannelFactory
 {

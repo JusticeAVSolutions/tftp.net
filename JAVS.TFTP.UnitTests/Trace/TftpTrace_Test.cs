@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using Tftp.Net.Trace;
+using JAVS.TFTP.Trace;
+using JAVS.TFTP.UnitTests.Transfer.States;
 
-namespace Tftp.Net.UnitTests.Trace;
+namespace JAVS.TFTP.UnitTests.Trace;
 
 public class TftpTrace_Test : IDisposable
 {

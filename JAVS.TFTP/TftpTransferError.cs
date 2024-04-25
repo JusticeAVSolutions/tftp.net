@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tftp.Net;
+namespace JAVS.TFTP;
 
 /// <summary>
 /// Base class for all errors that may be passed to <code>ITftpTransfer.OnError</code>.

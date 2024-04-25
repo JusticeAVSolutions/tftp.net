@@ -1,4 +1,6 @@
-﻿namespace Tftp.Net.Transfer.States;
+﻿using JAVS.TFTP.Commands;
+
+namespace JAVS.TFTP.Transfer.States;
 
 class AcknowledgeWriteRequest : StateThatExpectsMessagesFromDefaultEndPoint
 {

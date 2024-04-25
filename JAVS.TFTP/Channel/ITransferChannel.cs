@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.Channel;
+namespace JAVS.TFTP.Channel;
 
 delegate void TftpCommandHandler(ITftpCommand command, EndPoint endpoint);
 

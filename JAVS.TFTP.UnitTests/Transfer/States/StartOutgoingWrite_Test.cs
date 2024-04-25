@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Linq;
-using Tftp.Net.Transfer.States;
 using System.IO;
+using System.Linq;
+using JAVS.TFTP.Commands;
+using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.UnitTests.Transfer.States;
+namespace JAVS.TFTP.UnitTests.Transfer.States;
 
 public class StartOutgoingWrite_Test
 {

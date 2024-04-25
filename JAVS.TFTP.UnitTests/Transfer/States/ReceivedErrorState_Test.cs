@@ -1,6 +1,6 @@
-﻿using Tftp.Net.Transfer.States;
+﻿using JAVS.TFTP.Transfer.States;
 
-namespace Tftp.Net.UnitTests;
+namespace JAVS.TFTP.UnitTests.Transfer.States;
 
 public class ReceivedErrorState_Test
 {

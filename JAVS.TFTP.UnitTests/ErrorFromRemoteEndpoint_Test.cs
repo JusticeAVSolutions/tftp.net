@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tftp.Net.UnitTests;
+namespace JAVS.TFTP.UnitTests;
 
 public sealed class ErrorFromRemoteEndpoint_Test
 {

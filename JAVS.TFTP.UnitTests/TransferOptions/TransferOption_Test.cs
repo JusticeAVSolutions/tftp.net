@@ -1,6 +1,7 @@
 ﻿using System;
+using JAVS.TFTP.Commands;
 
-namespace Tftp.Net.UnitTests.TransferOptions;
+namespace JAVS.TFTP.UnitTests.TransferOptions;
 
 public class TransferOption_Test
 {

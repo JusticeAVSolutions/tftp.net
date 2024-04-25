@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using Tftp.Net;
+using JAVS.TFTP;
 
 AutoResetEvent transferFinishedEvent = new(false);
 

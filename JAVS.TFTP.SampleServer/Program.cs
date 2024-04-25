@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using Tftp.Net;
+using JAVS.TFTP;
 
 var serverDirectory = Environment.CurrentDirectory;
 

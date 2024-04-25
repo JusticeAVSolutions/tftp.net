@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tftp.Net.Transfer;
+namespace JAVS.TFTP.Transfer;
 
 /// <summary>
 /// Simple implementation of a timer.
