@@ -5,51 +5,51 @@ using JAVS.TFTP.Transfer.States;
 
 namespace JAVS.TFTP.Trace;
 
-class LoggingStateDecorator : ITransferState
+internal class LoggingStateDecorator : ITransferState
 {
     public TftpTransfer Context
     {
-        get => _decoratee.Context;
-        set => _decoratee.Context = value;
+        get => _innerState.Context;
+        set => _innerState.Context = value;
     }
 
-    private readonly ITransferState _decoratee;
+    private readonly ITransferState _innerState;
     private readonly TftpTransfer _transfer;
 
-    public LoggingStateDecorator(ITransferState decoratee, TftpTransfer transfer)
+    public LoggingStateDecorator(ITransferState innerState, TftpTransfer transfer)
     {
-        _decoratee = decoratee;
+        _innerState = innerState;
         _transfer = transfer;
     }
 
-    public string GetStateName() => $"[{_decoratee.GetType().Name}]";
+    public string GetStateName() => $"[{_innerState.GetType().Name}]";
 
     public void OnStateEnter()
     {
         TftpTrace.Trace(GetStateName() + " OnStateEnter", _transfer);
-        _decoratee.OnStateEnter();
+        _innerState.OnStateEnter();
     }
 
     public void OnStart()
     {
         TftpTrace.Trace(GetStateName() + " OnStart", _transfer);
-        _decoratee.OnStart();
+        _innerState.OnStart();
     }
 
     public void OnCancel(TftpErrorPacket reason)
     {
         TftpTrace.Trace(GetStateName() + " OnCancel: " + reason, _transfer);
-        _decoratee.OnCancel(reason);
+        _innerState.OnCancel(reason);
     }
 
     public void OnCommand(ITftpCommand command, EndPoint endpoint)
     {
         TftpTrace.Trace(GetStateName() + " OnCommand: " + command + " from " + endpoint, _transfer);
-        _decoratee.OnCommand(command, endpoint);
+        _innerState.OnCommand(command, endpoint);
     }
 
     public void OnTimer()
     {
-        _decoratee.OnTimer();
+        _innerState.OnTimer();
     }
 }
