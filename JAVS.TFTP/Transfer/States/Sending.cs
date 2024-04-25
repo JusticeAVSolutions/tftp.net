@@ -73,6 +73,9 @@ namespace Tftp.Net.Transfer.States
             SendAndRepeat(dataCommand);
         }
 
+        public override void OnOptionAcknowledgement(OptionAcknowledgement command)
+        {
+        }
         #endregion
     }
 }

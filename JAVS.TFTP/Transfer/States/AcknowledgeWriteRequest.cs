@@ -30,5 +30,9 @@ namespace Tftp.Net.Transfer.States
         {
             Context.SetState(new ReceivedError(command));
         }
+
+        public override void OnOptionAcknowledgement(OptionAcknowledgement command)
+        {
+        }
     }
 }

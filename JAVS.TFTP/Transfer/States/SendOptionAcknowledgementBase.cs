@@ -24,5 +24,9 @@ namespace Tftp.Net.Transfer
         {
             Context.SetState(new CancelledByUser(reason));
         }
+
+        public override void OnOptionAcknowledgement(OptionAcknowledgement command)
+        {
+        }
     }
 }

@@ -58,5 +58,9 @@ namespace Tftp.Net.Transfer.States
             Context.GetConnection().Send(ack);
             ResetTimeout();
         }
+
+        public override void OnOptionAcknowledgement(OptionAcknowledgement command)
+        {
+        }
     }
 }
