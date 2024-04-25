@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
 using Tftp.Net.Transfer.States;
-using System.IO;
-using Tftp.Net.Channel;
 using System.Net;
-using Tftp.Net.Trace;
 using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Trace
