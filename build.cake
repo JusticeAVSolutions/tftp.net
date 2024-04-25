@@ -12,7 +12,7 @@ Task("Update-Version")
         foreach (var csproj in GetFiles("**/*.csproj"))
         {
             Information($"Updating {csproj} to {fullVersion}...");
-            RegexReplaceInFile(csproj.ToString(), "(<Version>)([0-9\\.]+)(</Version>)", $"${{1}}{fullVersion}$3");
+            RegexReplaceInFile(csproj.ToString(), "(<PackageVersion>)([0-9\\.]+)(</PackageVersion>)", $"${{1}}{fullVersion}$3");
         }
 
         foreach (var file in GetFiles("**/AssemblyInfo.cs"))
