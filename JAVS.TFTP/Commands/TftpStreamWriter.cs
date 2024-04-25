@@ -4,26 +4,26 @@ namespace JAVS.TFTP.Commands;
 
 class TftpStreamWriter
 {
-    private readonly Stream stream;
+    private readonly Stream _stream;
 
     public TftpStreamWriter(Stream stream)
     {
-        this.stream = stream;
+        _stream = stream;
     }
 
     public void WriteUInt16(ushort value)
     {
-        stream.WriteByte((byte)(value >> 8));
-        stream.WriteByte((byte)(value & 0xFF));
+        _stream.WriteByte((byte)(value >> 8));
+        _stream.WriteByte((byte)(value & 0xFF));
     }
 
     public void WriteByte(byte b)
     {
-        stream.WriteByte(b);
+        _stream.WriteByte(b);
     }
 
     public void WriteBytes(byte[] data)
     {
-        stream.Write(data, 0, data.Length);
+        _stream.Write(data, 0, data.Length);
     }
 }

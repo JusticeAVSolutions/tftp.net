@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace JAVS.TFTP.Channel;
 
-static class TransferChannelFactory
+internal static class TransferChannelFactory
 {
     public static ITransferChannel CreateServer(EndPoint localAddress)
     {

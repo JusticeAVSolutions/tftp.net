@@ -6,7 +6,7 @@ using JAVS.TFTP.Transfer.States;
 
 namespace JAVS.TFTP.Transfer;
 
-class LocalWriteTransfer : TftpTransfer
+internal class LocalWriteTransfer : TftpTransfer
 {
     public LocalWriteTransfer(ITransferChannel connection, string filename, IEnumerable<TransferOption> options)
         : base(connection, filename, new StartIncomingWrite(options))

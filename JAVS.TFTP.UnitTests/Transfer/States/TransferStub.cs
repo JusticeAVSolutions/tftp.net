@@ -16,7 +16,7 @@ internal class TransferStub : TftpTransfer
     {
     }
 
-    private ChannelStub Channel => (ChannelStub)connection;
+    private ChannelStub Channel => (ChannelStub)_connection;
 
     public List<ITftpCommand> SentCommands => Channel.SentCommands;
 
@@ -41,7 +41,7 @@ internal class TransferStub : TftpTransfer
     {
     }
 
-    public ITransferState State => state;
+    public ITransferState State => _state;
 
     public void OnCommand(ITftpCommand command)
     {
@@ -60,7 +60,7 @@ internal class TransferStub : TftpTransfer
 
     public void OnTimer()
     {
-        state.OnTimer();
+        _state.OnTimer();
     }
 
     public override void Dispose()

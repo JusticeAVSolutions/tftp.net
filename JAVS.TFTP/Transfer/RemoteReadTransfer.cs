@@ -4,7 +4,7 @@ using JAVS.TFTP.Transfer.States;
 
 namespace JAVS.TFTP.Transfer;
 
-class RemoteReadTransfer : TftpTransfer
+internal class RemoteReadTransfer : TftpTransfer
 {
     public RemoteReadTransfer(ITransferChannel connection, String filename)
         : base(connection, filename, new StartOutgoingRead())

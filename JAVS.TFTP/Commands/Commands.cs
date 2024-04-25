@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace JAVS.TFTP.Commands;
 
-interface ITftpCommand
+internal interface ITftpCommand
 {
     void Visit(ITftpCommandVisitor visitor);
 }
 
-interface ITftpCommandVisitor
+internal interface ITftpCommandVisitor
 {
     void OnReadRequest(ReadRequest command);
     void OnWriteRequest(WriteRequest command);
@@ -18,25 +17,25 @@ interface ITftpCommandVisitor
     void OnOptionAcknowledgement(OptionAcknowledgement command);
 }
 
-abstract class ReadOrWriteRequest
+internal abstract class ReadOrWriteRequest
 {
-    private readonly ushort opCode;
+    private readonly ushort _opCode;
 
-    public String Filename { get; private set; }
+    public string Filename { get; private set; }
     public TftpTransferMode Mode { get; private set; }
     public IEnumerable<TransferOption> Options { get; private set; }
 
-    protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode,
+    protected ReadOrWriteRequest(ushort opCode, string filename, TftpTransferMode mode,
         IEnumerable<TransferOption> options)
     {
-        this.opCode = opCode;
+        _opCode = opCode;
         Filename = filename;
         Mode = mode;
         Options = options;
     }
 }
 
-class ReadRequest : ReadOrWriteRequest, ITftpCommand
+internal class ReadRequest : ReadOrWriteRequest, ITftpCommand
 {
     public const ushort OpCode = 1;
 
@@ -51,7 +50,7 @@ class ReadRequest : ReadOrWriteRequest, ITftpCommand
     }
 }
 
-class WriteRequest : ReadOrWriteRequest, ITftpCommand
+internal class WriteRequest : ReadOrWriteRequest, ITftpCommand
 {
     public const ushort OpCode = 2;
 
@@ -66,7 +65,7 @@ class WriteRequest : ReadOrWriteRequest, ITftpCommand
     }
 }
 
-class Data : ITftpCommand
+internal class Data : ITftpCommand
 {
     public const ushort OpCode = 3;
 
@@ -85,7 +84,7 @@ class Data : ITftpCommand
     }
 }
 
-class Acknowledgement : ITftpCommand
+internal class Acknowledgement : ITftpCommand
 {
     public const ushort OpCode = 4;
 
@@ -102,7 +101,7 @@ class Acknowledgement : ITftpCommand
     }
 }
 
-class Error : ITftpCommand
+internal class Error : ITftpCommand
 {
     public const ushort OpCode = 5;
 
@@ -121,7 +120,7 @@ class Error : ITftpCommand
     }
 }
 
-class OptionAcknowledgement : ITftpCommand
+internal class OptionAcknowledgement : ITftpCommand
 {
     public const ushort OpCode = 6;
     public IEnumerable<TransferOption> Options { get; private set; }

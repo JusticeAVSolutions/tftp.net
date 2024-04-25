@@ -6,7 +6,7 @@ namespace JAVS.TFTP.Commands;
 /// <summary>
 /// Serializes an ITftpCommand into a stream of bytes.
 /// </summary>
-class CommandSerializer
+internal class CommandSerializer
 {
     /// <summary>
     /// Call this method to serialize the given <code>command</code> using the given <code>writer</code>.
@@ -19,75 +19,75 @@ class CommandSerializer
 
     private class CommandComposerVisitor : ITftpCommandVisitor
     {
-        private readonly TftpStreamWriter writer;
+        private readonly TftpStreamWriter _writer;
 
         public CommandComposerVisitor(Stream stream)
         {
-            writer = new TftpStreamWriter(stream);
+            _writer = new TftpStreamWriter(stream);
         }
 
         private void OnReadOrWriteRequest(ReadOrWriteRequest command)
         {
-            writer.WriteBytes(Encoding.ASCII.GetBytes(command.Filename));
-            writer.WriteByte(0);
-            writer.WriteBytes(Encoding.ASCII.GetBytes(command.Mode.ToString()));
-            writer.WriteByte(0);
+            _writer.WriteBytes(Encoding.ASCII.GetBytes(command.Filename));
+            _writer.WriteByte(0);
+            _writer.WriteBytes(Encoding.ASCII.GetBytes(command.Mode.ToString()));
+            _writer.WriteByte(0);
 
             if (command.Options != null)
             {
                 foreach (var option in command.Options)
                 {
-                    writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
-                    writer.WriteByte(0);
-                    writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
-                    writer.WriteByte(0);
+                    _writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
+                    _writer.WriteByte(0);
+                    _writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
+                    _writer.WriteByte(0);
                 }
             }
         }
 
         public void OnReadRequest(ReadRequest command)
         {
-            writer.WriteUInt16(ReadRequest.OpCode);
+            _writer.WriteUInt16(ReadRequest.OpCode);
             OnReadOrWriteRequest(command);
         }
 
         public void OnWriteRequest(WriteRequest command)
         {
-            writer.WriteUInt16(WriteRequest.OpCode);
+            _writer.WriteUInt16(WriteRequest.OpCode);
             OnReadOrWriteRequest(command);
         }
 
         public void OnData(Data command)
         {
-            writer.WriteUInt16(Data.OpCode);
-            writer.WriteUInt16(command.BlockNumber);
-            writer.WriteBytes(command.Bytes);
+            _writer.WriteUInt16(Data.OpCode);
+            _writer.WriteUInt16(command.BlockNumber);
+            _writer.WriteBytes(command.Bytes);
         }
 
         public void OnAcknowledgement(Acknowledgement command)
         {
-            writer.WriteUInt16(Acknowledgement.OpCode);
-            writer.WriteUInt16(command.BlockNumber);
+            _writer.WriteUInt16(Acknowledgement.OpCode);
+            _writer.WriteUInt16(command.BlockNumber);
         }
 
         public void OnError(Error command)
         {
-            writer.WriteUInt16(Error.OpCode);
-            writer.WriteUInt16(command.ErrorCode);
-            writer.WriteBytes(Encoding.ASCII.GetBytes(command.Message));
-            writer.WriteByte(0);
+            _writer.WriteUInt16(Error.OpCode);
+            _writer.WriteUInt16(command.ErrorCode);
+            _writer.WriteBytes(Encoding.ASCII.GetBytes(command.Message));
+            _writer.WriteByte(0);
         }
 
         public void OnOptionAcknowledgement(OptionAcknowledgement command)
         {
-            writer.WriteUInt16(OptionAcknowledgement.OpCode);
+            _writer.WriteUInt16(OptionAcknowledgement.OpCode);
 
             foreach (var option in command.Options)
             {
-                writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
-                writer.WriteByte(0);
-                writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
-                writer.WriteByte(0);
+                _writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
+                _writer.WriteByte(0);
+                _writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
+                _writer.WriteByte(0);
             }
         }
     }

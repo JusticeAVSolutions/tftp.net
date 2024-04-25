@@ -5,7 +5,7 @@ namespace JAVS.TFTP.Transfer.States;
 
 class ReceivedError : BaseState
 {
-    private readonly TftpTransferError error;
+    private readonly TftpTransferError _error;
 
     public ReceivedError(Error error)
         : this(new TftpErrorPacket(error.ErrorCode, GetNonEmptyErrorMessage(error)))
@@ -17,13 +17,13 @@ class ReceivedError : BaseState
 
     public ReceivedError(TftpTransferError error)
     {
-        this.error = error;
+        _error = error;
     }
 
     public override void OnStateEnter()
     {
-        TftpTrace.Trace("Received error: " + error, Context);
-        Context.RaiseOnError(error);
+        TftpTrace.Trace("Received error: " + _error, Context);
+        Context.RaiseOnError(_error);
         Context.SetState(new Closed());
     }
 }

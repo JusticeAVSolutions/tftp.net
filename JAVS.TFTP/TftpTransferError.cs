@@ -73,15 +73,15 @@ public class NetworkError : TftpTransferError
 /// </summary>
 public class TimeoutError : TftpTransferError
 {
-    private readonly TimeSpan RetryTimeout;
-    private readonly int RetryCount;
+    private readonly TimeSpan _retryTimeout;
+    private readonly int _retryCount;
 
     public TimeoutError(TimeSpan retryTimeout, int retryCount)
     {
-        RetryTimeout = retryTimeout;
-        RetryCount = retryCount;
+        _retryTimeout = retryTimeout;
+        _retryCount = retryCount;
     }
 
     public override string ToString() =>
-        $"Timeout error. RetryTimeout ({RetryTimeout}) violated more than {RetryCount} times in a row";
+        $"Timeout error. RetryTimeout ({_retryTimeout}) violated more than {_retryCount} times in a row";
 }

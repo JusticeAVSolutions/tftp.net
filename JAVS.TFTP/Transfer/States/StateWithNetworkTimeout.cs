@@ -5,23 +5,23 @@ namespace JAVS.TFTP.Transfer.States;
 
 class StateWithNetworkTimeout : BaseState
 {
-    private SimpleTimer timer;
-    private ITftpCommand lastCommand;
-    private int retriesUsed;
+    private SimpleTimer _timer;
+    private ITftpCommand _lastCommand;
+    private int _retriesUsed;
 
     public override void OnStateEnter()
     {
-        timer = new SimpleTimer(Context.RetryTimeout);
+        _timer = new SimpleTimer(Context.RetryTimeout);
     }
 
     public override void OnTimer()
     {
-        if (timer.IsTimeout())
+        if (_timer.IsTimeout())
         {
             TftpTrace.Trace("Network timeout.", Context);
-            timer.Restart();
+            _timer.Restart();
 
-            if (retriesUsed++ >= Context.RetryCount)
+            if (_retriesUsed++ >= Context.RetryCount)
             {
                 TftpTransferError error = new TimeoutError(Context.RetryTimeout, Context.RetryCount);
                 Context.SetState(new ReceivedError(error));
@@ -33,22 +33,22 @@ class StateWithNetworkTimeout : BaseState
 
     private void HandleTimeout()
     {
-        if (lastCommand != null)
+        if (_lastCommand != null)
         {
-            Context.GetConnection().Send(lastCommand);
+            Context.GetConnection().Send(_lastCommand);
         }
     }
 
     protected void SendAndRepeat(ITftpCommand command)
     {
         Context.GetConnection().Send(command);
-        lastCommand = command;
+        _lastCommand = command;
         ResetTimeout();
     }
 
     protected void ResetTimeout()
     {
-        timer.Restart();
-        retriesUsed = 0;
+        _timer.Restart();
+        _retriesUsed = 0;
     }
 }

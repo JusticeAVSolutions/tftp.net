@@ -3,25 +3,25 @@ using System.IO;
 
 namespace JAVS.TFTP.Commands;
 
-class TftpStreamReader
+internal class TftpStreamReader
 {
-    private readonly Stream stream;
+    private readonly Stream _stream;
 
     public TftpStreamReader(Stream stream)
     {
-        this.stream = stream;
+        _stream = stream;
     }
 
     public ushort ReadUInt16()
     {
-        int byte1 = stream.ReadByte();
-        int byte2 = stream.ReadByte();
+        var byte1 = _stream.ReadByte();
+        var byte2 = _stream.ReadByte();
         return (ushort)((byte)byte1 << 8 | (byte)byte2);
     }
 
     public byte ReadByte()
     {
-        int nextByte = stream.ReadByte();
+        var nextByte = _stream.ReadByte();
 
         if (nextByte == -1)
             throw new IOException();
@@ -31,8 +31,8 @@ class TftpStreamReader
 
     public byte[] ReadBytes(int maxBytes)
     {
-        byte[] buffer = new byte[maxBytes];
-        int bytesRead = stream.Read(buffer, 0, buffer.Length);
+        var buffer = new byte[maxBytes];
+        var bytesRead = _stream.Read(buffer, 0, buffer.Length);
 
         if (bytesRead == -1)
             throw new IOException();

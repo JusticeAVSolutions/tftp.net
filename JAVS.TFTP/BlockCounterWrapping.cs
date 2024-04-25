@@ -6,7 +6,7 @@ public enum BlockCounterWrapAround
     ToOne
 }
 
-static class BlockCounterWrappingHelpers
+internal static class BlockCounterWrappingHelpers
 {
     private const ushort LAST_AVAILABLE_BLOCK_NUMBER = 65535;
 

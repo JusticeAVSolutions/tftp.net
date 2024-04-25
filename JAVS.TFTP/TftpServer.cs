@@ -35,16 +35,16 @@ public class TftpServer : IDisposable
     /// <summary>
     /// Server port that we're listening on.
     /// </summary>
-    private readonly ITransferChannel serverSocket;
+    private readonly ITransferChannel _serverSocket;
 
     public TftpServer(IPEndPoint localAddress)
     {
         if (localAddress == null)
             throw new ArgumentNullException(nameof(localAddress));
 
-        serverSocket = TransferChannelFactory.CreateServer(localAddress);
-        serverSocket.OnCommandReceived += serverSocket_OnCommandReceived;
-        serverSocket.OnError += serverSocket_OnError;
+        _serverSocket = TransferChannelFactory.CreateServer(localAddress);
+        _serverSocket.OnCommandReceived += ServerSocket_OnCommandReceived;
+        _serverSocket.OnError += ServerSocket_OnError;
     }
 
     public TftpServer(IPAddress localAddress)
@@ -73,15 +73,15 @@ public class TftpServer : IDisposable
     /// </summary>
     public void Start()
     {
-        serverSocket.Open();
+        _serverSocket.Open();
     }
 
-    private void serverSocket_OnError(TftpTransferError error)
+    private void ServerSocket_OnError(TftpTransferError error)
     {
         RaiseOnError(error);
     }
 
-    private void serverSocket_OnCommandReceived(ITftpCommand command, EndPoint endpoint)
+    private void ServerSocket_OnCommandReceived(ITftpCommand command, EndPoint endpoint)
     {
         //Ignore all other commands
         if (command is not ReadOrWriteRequest request)
@@ -107,7 +107,7 @@ public class TftpServer : IDisposable
 
     public void Dispose()
     {
-        serverSocket.Dispose();
+        _serverSocket.Dispose();
     }
 
     #endregion

@@ -5,16 +5,16 @@ namespace JAVS.TFTP.Transfer.States;
 
 class StartIncomingRead : BaseState
 {
-    private readonly IEnumerable<TransferOption> optionsRequestedByClient;
+    private readonly IEnumerable<TransferOption> _optionsRequestedByClient;
 
     public StartIncomingRead(IEnumerable<TransferOption> optionsRequestedByClient)
     {
-        this.optionsRequestedByClient = optionsRequestedByClient;
+        _optionsRequestedByClient = optionsRequestedByClient;
     }
 
     public override void OnStateEnter()
     {
-        Context.ProposedOptions = new TransferOptionSet(optionsRequestedByClient);
+        Context.ProposedOptions = new TransferOptionSet(_optionsRequestedByClient);
     }
 
     public override void OnStart()

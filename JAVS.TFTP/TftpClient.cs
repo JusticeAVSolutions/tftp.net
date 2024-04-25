@@ -13,7 +13,7 @@ namespace JAVS.TFTP;
 public class TftpClient
 {
     private const int DEFAULT_SERVER_PORT = 69;
-    private readonly IPEndPoint remoteAddress;
+    private readonly IPEndPoint _remoteAddress;
 
     /// <summary>
     /// Default constructor.
@@ -21,14 +21,14 @@ public class TftpClient
     /// <param name="remoteAddress">Address of the server that you would like to connect to.</param>
     public TftpClient(IPEndPoint remoteAddress)
     {
-        this.remoteAddress = remoteAddress;
+        _remoteAddress = remoteAddress;
     }
 
     /// <summary>
     /// Connects to a server
     /// </summary>
     /// <param name="ip">Address of the server that you want connect to.</param>
-    /// <param name="port">Port on the server that you want connect to (default: 69)</param>
+    /// <param name="port">Port on the server that you want to connect to (default: 69)</param>
     public TftpClient(IPAddress ip, int port)
         : this(new IPEndPoint(ip, port))
     {
@@ -37,7 +37,7 @@ public class TftpClient
     /// <summary>
     /// Connects to a server on port 69.
     /// </summary>
-    /// <param name="ip">Address of the server that you want connect to.</param>
+    /// <param name="ip">Address of the server that you want to connect to.</param>
     public TftpClient(IPAddress ip)
         : this(new IPEndPoint(ip, DEFAULT_SERVER_PORT))
     {
@@ -47,7 +47,7 @@ public class TftpClient
     /// Connect to a server by hostname.
     /// </summary>
     /// <param name="host">Hostname or ip to connect to</param>
-    public TftpClient(String host)
+    public TftpClient(string host)
         : this(host, DEFAULT_SERVER_PORT)
     {
     }
@@ -59,12 +59,12 @@ public class TftpClient
     /// <param name="port">Port to connect to</param>
     public TftpClient(string host, int port)
     {
-        IPAddress ip = Dns.GetHostAddresses(host).FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+        var ip = Dns.GetHostAddresses(host).FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
 
         if (ip == null)
             throw new ArgumentException($"Could not convert '{host}' to an IPv4 address.", nameof(host));
 
-        remoteAddress = new IPEndPoint(ip, port);
+        _remoteAddress = new IPEndPoint(ip, port);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class TftpClient
     /// </summary>
     public ITftpTransfer Download(string filename)
     {
-        var channel = TransferChannelFactory.CreateConnection(remoteAddress);
+        var channel = TransferChannelFactory.CreateConnection(_remoteAddress);
         return new RemoteReadTransfer(channel, filename);
     }
 
@@ -83,7 +83,7 @@ public class TftpClient
     /// </summary>
     public ITftpTransfer Upload(string filename)
     {
-        var channel = TransferChannelFactory.CreateConnection(remoteAddress);
+        var channel = TransferChannelFactory.CreateConnection(_remoteAddress);
         return new RemoteWriteTransfer(channel, filename);
     }
 }

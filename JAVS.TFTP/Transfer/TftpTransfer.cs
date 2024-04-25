@@ -9,28 +9,28 @@ using JAVS.TFTP.Transfer.States;
 
 namespace JAVS.TFTP.Transfer;
 
-class TftpTransfer : ITftpTransfer
+internal class TftpTransfer : ITftpTransfer
 {
-    protected ITransferState state;
-    protected readonly ITransferChannel connection;
-    protected Timer timer;
+    protected ITransferState _state;
+    protected readonly ITransferChannel _connection;
+    protected readonly Timer _timer;
 
     public TransferOptionSet ProposedOptions { get; set; }
     public TransferOptionSet NegotiatedOptions { get; private set; }
     public bool WasStarted { get; private set; }
     public Stream InputOutputStream { get; protected set; }
 
-    public TftpTransfer(ITransferChannel connection, String filename, ITransferState initialState)
+    public TftpTransfer(ITransferChannel connection, string filename, ITransferState initialState)
     {
         ProposedOptions = TransferOptionSet.NewDefaultSet();
         Filename = filename;
         RetryCount = 5;
         SetState(initialState);
-        this.connection = connection;
-        this.connection.OnCommandReceived += connection_OnCommandReceived;
-        this.connection.OnError += connection_OnError;
-        this.connection.Open();
-        timer = new Timer(timer_OnTimer, null, 500, 500);
+        _connection = connection;
+        _connection.OnCommandReceived += connection_OnCommandReceived;
+        _connection.OnError += connection_OnError;
+        _connection.Open();
+        _timer = new Timer(timer_OnTimer, null, 500, 500);
     }
 
     private void timer_OnTimer(object context)
@@ -39,7 +39,7 @@ class TftpTransfer : ITftpTransfer
         {
             lock (this)
             {
-                state.OnTimer();
+                _state.OnTimer();
             }
         }
         catch (Exception e)
@@ -52,7 +52,7 @@ class TftpTransfer : ITftpTransfer
     {
         lock (this)
         {
-            state.OnCommand(command, endpoint);
+            _state.OnCommand(command, endpoint);
         }
     }
 
@@ -66,9 +66,9 @@ class TftpTransfer : ITftpTransfer
 
     internal virtual void SetState(ITransferState newState)
     {
-        state = DecorateForLogging(newState);
-        state.Context = this;
-        state.OnStateEnter();
+        _state = DecorateForLogging(newState);
+        _state.Context = this;
+        _state.OnStateEnter();
     }
 
     protected virtual ITransferState DecorateForLogging(ITransferState state)
@@ -78,7 +78,7 @@ class TftpTransfer : ITftpTransfer
 
     internal ITransferChannel GetConnection()
     {
-        return connection;
+        return _connection;
     }
 
     internal void RaiseOnProgress(long bytesTransferred)
@@ -194,7 +194,7 @@ class TftpTransfer : ITftpTransfer
 
         lock (this)
         {
-            state.OnStart();
+            _state.OnStart();
         }
     }
 
@@ -205,7 +205,7 @@ class TftpTransfer : ITftpTransfer
 
         lock (this)
         {
-            state.OnCancel(reason);
+            _state.OnCancel(reason);
         }
     }
 
@@ -213,7 +213,7 @@ class TftpTransfer : ITftpTransfer
     {
         lock (this)
         {
-            timer.Dispose();
+            _timer.Dispose();
             Cancel(new TftpErrorPacket(0, "ITftpTransfer has been disposed."));
 
             if (InputOutputStream != null)
@@ -222,7 +222,7 @@ class TftpTransfer : ITftpTransfer
                 InputOutputStream = null;
             }
 
-            connection.Dispose();
+            _connection.Dispose();
         }
     }
 

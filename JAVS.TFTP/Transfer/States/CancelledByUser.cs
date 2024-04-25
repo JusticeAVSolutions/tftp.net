@@ -4,16 +4,16 @@ namespace JAVS.TFTP.Transfer.States;
 
 class CancelledByUser : BaseState
 {
-    private readonly TftpErrorPacket reason;
+    private readonly TftpErrorPacket _reason;
 
     public CancelledByUser(TftpErrorPacket reason)
     {
-        this.reason = reason;
+        _reason = reason;
     }
 
     public override void OnStateEnter()
     {
-        var command = new Error(reason.ErrorCode, reason.ErrorMessage);
+        var command = new Error(_reason.ErrorCode, _reason.ErrorMessage);
         Context.GetConnection().Send(command);
         Context.SetState(new Closed());
     }

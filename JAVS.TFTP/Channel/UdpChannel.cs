@@ -6,28 +6,28 @@ using JAVS.TFTP.Commands;
 
 namespace JAVS.TFTP.Channel;
 
-class UdpChannel : ITransferChannel
+internal class UdpChannel : ITransferChannel
 {
     public event TftpCommandHandler OnCommandReceived;
     public event TftpChannelErrorHandler OnError;
 
-    private IPEndPoint endpoint;
-    private UdpClient client;
-    private readonly CommandSerializer serializer = new();
-    private readonly CommandParser parser = new();
+    private IPEndPoint _endpoint;
+    private UdpClient _client;
+    private readonly CommandSerializer _serializer = new();
+    private readonly CommandParser _parser = new();
 
     public UdpChannel(UdpClient client)
     {
-        this.client = client;
-        endpoint = null;
+        _client = client;
+        _endpoint = null;
     }
 
     public void Open()
     {
-        if (client == null)
+        if (_client == null)
             throw new ObjectDisposedException("UdpChannel");
 
-        client.BeginReceive(UdpReceivedCallback, null);
+        _client.BeginReceive(UdpReceivedCallback, null);
     }
 
     private void UdpReceivedCallback(IAsyncResult result)
@@ -41,13 +41,13 @@ class UdpChannel : ITransferChannel
 
             lock (this)
             {
-                if (client == null)
+                if (_client == null)
                     return;
 
-                data = client.EndReceive(result, ref endpoint);
+                data = _client.EndReceive(result, ref endpoint);
             }
 
-            command = parser.Parse(data);
+            command = _parser.Parse(data);
         }
         catch (SocketException e)
         {
@@ -67,8 +67,8 @@ class UdpChannel : ITransferChannel
 
         lock (this)
         {
-            if (client != null)
-                client.BeginReceive(UdpReceivedCallback, null);
+            if (_client != null)
+                _client.BeginReceive(UdpReceivedCallback, null);
         }
     }
 
@@ -84,17 +84,17 @@ class UdpChannel : ITransferChannel
 
     public void Send(ITftpCommand command)
     {
-        if (client == null)
+        if (_client == null)
             throw new ObjectDisposedException("UdpChannel");
 
-        if (endpoint == null)
+        if (_endpoint == null)
             throw new InvalidOperationException("RemoteEndpoint needs to be set before you can send TFTP commands.");
 
         using (var stream = new MemoryStream())
         {
-            serializer.Serialize(command, stream);
+            _serializer.Serialize(command, stream);
             byte[] data = stream.GetBuffer();
-            client.Send(data, (int)stream.Length, endpoint);
+            _client.Send(data, (int)stream.Length, _endpoint);
         }
     }
 
@@ -102,27 +102,27 @@ class UdpChannel : ITransferChannel
     {
         lock (this)
         {
-            if (client == null)
+            if (_client == null)
                 return;
 
-            client.Close();
-            client = null;
+            _client.Close();
+            _client = null;
         }
     }
 
     public EndPoint RemoteEndpoint
     {
-        get => endpoint;
+        get => _endpoint;
 
         set
         {
             if (value is not IPEndPoint point)
                 throw new NotSupportedException("UdpChannel can only connect to IPEndPoints.");
 
-            if (client == null)
+            if (_client == null)
                 throw new ObjectDisposedException("UdpChannel");
 
-            endpoint = point;
+            _endpoint = point;
         }
     }
 }
