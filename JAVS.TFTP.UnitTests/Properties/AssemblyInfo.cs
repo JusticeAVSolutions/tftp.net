@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
-[assembly: AssemblyTitle("JAVS.TFTP")]
-[assembly: AssemblyDescription("A .NET# library that allows you to easily integrate a TFTP Client or TFTP Server in your application")]
+[assembly: AssemblyTitle("JAVS.TFTP.UnitTests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JAVS")]
-[assembly: AssemblyProduct("JAVS.TFTP")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyProduct("JAVS.TFTP.UnitTests")]
+[assembly: AssemblyCopyright("Copyright © JAVS 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-[assembly: Guid("abe46063-e48d-4197-9248-339cccb4dfef")]
+[assembly: Guid("cbaaca46-5966-443d-9b6a-717d8d47da24")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 //
@@ -34,4 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.3.1.0")]
 [assembly: AssemblyFileVersion("1.3.1.0")]
-[assembly: InternalsVisibleTo("JAVS.TFTP.UnitTests")]
