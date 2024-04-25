@@ -1,49 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Tftp.Net.Transfer;
 
-namespace Tftp.Net.UnitTests.TransferOptions
+namespace Tftp.Net.UnitTests.TransferOptions;
+
+[TestFixture]
+internal class TransferOption_Test
 {
-    [TestFixture]
-    class TransferOption_Test
+    [Test]
+    public void CanBeCreatedWithValidNameAndValue()
     {
-        [Test]
-        public void CanBeCreatedWithValidNameAndValue()
-        {
-            TransferOption option = new TransferOption("Test", "Hallo Welt");
-            Assert.AreEqual("Test", option.Name);
-            Assert.AreEqual("Hallo Welt", option.Value);
-            Assert.IsFalse(option.IsAcknowledged);
-        }
+        TransferOption option = new TransferOption("Test", "Hallo Welt");
+        Assert.AreEqual("Test", option.Name);
+        Assert.AreEqual("Hallo Welt", option.Value);
+        Assert.IsFalse(option.IsAcknowledged);
+    }
 
-        [Test]
-        public void RejectsInvalidName1()
-        {
-            Assert.Throws<ArgumentException>(() => new TransferOption("", "Hallo Welt"));
-        }
+    [Test]
+    public void RejectsInvalidName1()
+    {
+        Assert.Throws<ArgumentException>(() => new TransferOption("", "Hallo Welt"));
+    }
 
-        [Test]
-        public void RejectsInvalidName2()
-        {
-            Assert.Throws<ArgumentException>(() => new TransferOption(null, "Hallo Welt"));
-        }
+    [Test]
+    public void RejectsInvalidName2()
+    {
+        Assert.Throws<ArgumentException>(() => new TransferOption(null, "Hallo Welt"));
+    }
 
-        [Test]
-        public void RejectsInvalidValue()
-        {
-            Assert.Throws<ArgumentNullException>(() => new TransferOption("Test", null));
-        }
+    [Test]
+    public void RejectsInvalidValue()
+    {
+        Assert.Throws<ArgumentNullException>(() => new TransferOption("Test", null));
+    }
 
-        [Test]
-        public void AcceptsEmptyValue()
-        {
-            //Must not throw any exceptions
-            TransferOption option = new TransferOption("Test", "");
-        }
+    [Test]
+    public void AcceptsEmptyValue()
+    {
+        //Must not throw any exceptions
+        TransferOption option = new TransferOption("Test", "");
     }
 }
-
-
