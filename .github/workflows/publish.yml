@@ -1,0 +1,24 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore Tools
+      run: dotnet tool restore
+    - name: Cake Build
+      run: dotnet cake --buildNumber=${{ github.run_number }}
+    - name: Publish
+      run: dotnet nuget push "JAVS.TFTP/bin/Release/*.nupkg" -s "https://nuget.pkg.github.com/JusticeAVSolutions/index.json" -k ${{ secrets.GITHUB_TOKEN }}

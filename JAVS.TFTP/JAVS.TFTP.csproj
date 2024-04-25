@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net35</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/JusticeAVSolutions/tftp.net</PackageProjectUrl>
+    <PackageTags>TFTP library</PackageTags>
+    <Authors>Michael Baer;JAVS</Authors>
+    <PackageReleaseNotes>Various bugfixes</PackageReleaseNotes>
+    <RootNamespace>Tftp.Net</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Transfer\InitialStateFactory.cs" />
+  </ItemGroup>
+</Project>

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tftp.Net", "Tftp.Net\Tftp.Net.csproj", "{A3F0DE15-AC97-428D-830C-4F9721EE3627}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JAVS.TFTP", "JAVS.TFTP\JAVS.TFTP.csproj", "{A3F0DE15-AC97-428D-830C-4F9721EE3627}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tftp.Net.UnitTests", "Tftp.Net.UnitTests\Tftp.Net.UnitTests.csproj", "{DA4D3CE2-0495-431B-AEEF-E469DC127D5F}"
 	ProjectSection(ProjectDependencies) = postProject
