@@ -9,15 +9,15 @@ public class TftpClientServer_Test
     public byte[] DemoData = { 1, 2, 3 };
     private bool TransferHasFinished = false;
 
-    [Fact(Skip = "Run locally only, requires permission on socket")]
+    [Fact]
     public void ClientsReadsFromServer()
     {
-        using (TftpServer server = new TftpServer(new IPEndPoint(IPAddress.Loopback, 69)))
+        using (TftpServer server = new TftpServer(new IPEndPoint(IPAddress.Loopback, 10069)))
         {
             server.OnReadRequest += server_OnReadRequest;
             server.Start();
 
-            TftpClient client = new TftpClient(new IPEndPoint(IPAddress.Loopback, 69));
+            TftpClient client = new TftpClient(new IPEndPoint(IPAddress.Loopback, 10069));
             using (ITftpTransfer transfer = client.Download("Demo File"))
             {
                 MemoryStream ms = new MemoryStream();
