@@ -1,40 +1,37 @@
-﻿using NUnit.Framework;
-using Tftp.Net.Transfer.States;
+﻿using Tftp.Net.Transfer.States;
 using System.IO;
 
 namespace Tftp.Net.UnitTests;
 
-[TestFixture]
-internal class StartOutgoingRead_Test
+public class StartOutgoingRead_Test
 {
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public StartOutgoingRead_Test()
     {
         transfer = new TransferStub();
         transfer.SetState(new StartOutgoingRead());
     }
 
-    [Test]
+    [Fact]
     public void CanCancel()
     {
         transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void IgnoresCommands()
     {
         transfer.OnCommand(new Error(5, "Hallo Welt"));
-        Assert.IsInstanceOf<StartOutgoingRead>(transfer.State);
+        Assert.IsType<StartOutgoingRead>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void CanStart()
     {
         transfer.Start(new MemoryStream());
-        Assert.IsTrue(transfer.CommandWasSent(typeof(ReadRequest)));
-        Assert.IsInstanceOf<SendReadRequest>(transfer.State);
+        Assert.True(transfer.CommandWasSent(typeof(ReadRequest)));
+        Assert.IsType<SendReadRequest>(transfer.State);
     }
 }

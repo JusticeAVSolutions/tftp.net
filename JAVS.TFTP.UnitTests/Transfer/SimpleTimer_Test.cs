@@ -1,37 +1,35 @@
 ﻿using System;
-using NUnit.Framework;
 using Tftp.Net.Transfer;
 using System.Threading.Tasks;
 
 namespace Tftp.Net.UnitTests.Transfer;
 
-[TestFixture]
-internal class SimpleTimer_Test
+public class SimpleTimer_Test
 {
-    [Test]
-    public void TimesOutWhenTimeoutIsReached()
+    [Fact]
+    public async Task TimesOutWhenTimeoutIsReached()
     {
         SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
-        Assert.IsFalse(timer.IsTimeout());
-        Task.Delay(200).Wait();
-        Assert.IsTrue(timer.IsTimeout());
+        Assert.False(timer.IsTimeout());
+        await Task.Delay(200);
+        Assert.True(timer.IsTimeout());
     }
 
-    [Test]
-    public void RestartingResetsTimeout()
+    [Fact]
+    public async Task RestartingResetsTimeout()
     {
         SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
-        Assert.IsFalse(timer.IsTimeout());
-        Task.Delay(200).Wait();
-        Assert.IsTrue(timer.IsTimeout());
+        Assert.False(timer.IsTimeout());
+        await Task.Delay(200);
+        Assert.True(timer.IsTimeout());
         timer.Restart();
-        Assert.IsFalse(timer.IsTimeout());
+        Assert.False(timer.IsTimeout());
     }
 
-    [Test]
+    [Fact]
     public void ImmediateTimeout()
     {
         SimpleTimer timer = new SimpleTimer(new TimeSpan(0));
-        Assert.IsTrue(timer.IsTimeout());
+        Assert.True(timer.IsTimeout());
     }
 }

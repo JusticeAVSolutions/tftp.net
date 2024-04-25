@@ -1,21 +1,18 @@
-﻿using NUnit.Framework;
-using Tftp.Net.Transfer.States;
+﻿using Tftp.Net.Transfer.States;
 
 namespace Tftp.Net.UnitTests;
 
-[TestFixture]
-internal class ReceivedErrorState_Test
+public class ReceivedErrorState_Test
 {
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public ReceivedErrorState_Test()
     {
         transfer = new TransferStub();
         transfer.SetState(new ReceivedError(new TftpErrorPacket(123, "Error")));
     }
 
-    [Test]
+    [Fact]
     public void CallsOnError()
     {
         bool OnErrorWasCalled = false;
@@ -23,22 +20,22 @@ internal class ReceivedErrorState_Test
         transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error)
         {
             OnErrorWasCalled = true;
-            Assert.AreEqual(transfer, t);
+            Assert.Equal(transfer, t);
 
-            Assert.IsInstanceOf<TftpErrorPacket>(error);
+            Assert.IsType<TftpErrorPacket>(error);
 
-            Assert.AreEqual(123, ((TftpErrorPacket)error).ErrorCode);
-            Assert.AreEqual("My Error", ((TftpErrorPacket)error).ErrorMessage);
+            Assert.Equal(123, ((TftpErrorPacket)error).ErrorCode);
+            Assert.Equal("My Error", ((TftpErrorPacket)error).ErrorMessage);
         };
 
-        Assert.IsFalse(OnErrorWasCalled);
+        Assert.False(OnErrorWasCalled);
         transfer.SetState(new ReceivedError(new TftpErrorPacket(123, "My Error")));
-        Assert.IsTrue(OnErrorWasCalled);
+        Assert.True(OnErrorWasCalled);
     }
 
-    [Test]
+    [Fact]
     public void TransitionsToClosed()
     {
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.IsType<Closed>(transfer.State);
     }
 }

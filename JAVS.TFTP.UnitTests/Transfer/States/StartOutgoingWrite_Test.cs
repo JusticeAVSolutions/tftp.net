@@ -1,64 +1,61 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
 
 namespace Tftp.Net.UnitTests.Transfer.States;
 
-[TestFixture]
-internal class StartOutgoingWrite_Test
+public class StartOutgoingWrite_Test
 {
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public StartOutgoingWrite_Test()
     {
         transfer = new TransferStub();
         transfer.SetState(new StartOutgoingWrite());
     }
 
-    [Test]
+    [Fact]
     public void CanCancel()
     {
         transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void IgnoresCommands()
     {
         transfer.OnCommand(new Error(5, "Hallo Welt"));
-        Assert.IsInstanceOf<StartOutgoingWrite>(transfer.State);
+        Assert.IsType<StartOutgoingWrite>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void CanStart()
     {
         transfer.Start(new MemoryStream());
-        Assert.IsInstanceOf<SendWriteRequest>(transfer.State);
+        Assert.IsType<SendWriteRequest>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void FillsTransferSizeIfPossible()
     {
         transfer.ExpectedSize = 123;
         transfer.Start(new StreamThatThrowsExceptionWhenReadingLength());
-        Assert.IsTrue(WasTransferSizeOptionRequested());
+        Assert.True(WasTransferSizeOptionRequested());
     }
 
-    [Test]
+    [Fact]
     public void FillsTransferSizeFromStreamIfPossible()
     {
         transfer.Start(new MemoryStream(new byte[] { 1 }));
-        Assert.IsTrue(WasTransferSizeOptionRequested());
+        Assert.True(WasTransferSizeOptionRequested());
     }
 
-    [Test]
+    [Fact]
     public void DoesNotFillTransferSizeWhenNotAvailable()
     {
         transfer.Start(new StreamThatThrowsExceptionWhenReadingLength());
-        Assert.IsFalse(WasTransferSizeOptionRequested());
+        Assert.False(WasTransferSizeOptionRequested());
     }
 
     private bool WasTransferSizeOptionRequested()

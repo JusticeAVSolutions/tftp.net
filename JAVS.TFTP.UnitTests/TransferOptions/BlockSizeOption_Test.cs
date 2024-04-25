@@ -1,55 +1,53 @@
-﻿using NUnit.Framework;
-using Tftp.Net.Transfer;
+﻿using Tftp.Net.Transfer;
 
 namespace Tftp.Net.UnitTests.TransferOptions;
 
-[TestFixture]
-internal class BlockSizeOption_Test
+public class BlockSizeOption_Test
 {
     private TransferOptionSet options;
 
-    [Test]
+    [Fact]
     public void AcceptsRegularOption()
     {
         Parse(new TransferOption("blksize", "16"));
-        Assert.IsTrue(options.IncludesBlockSizeOption);
-        Assert.AreEqual(16, options.BlockSize);
+        Assert.True(options.IncludesBlockSizeOption);
+        Assert.Equal(16, options.BlockSize);
     }
 
-    [Test]
+    [Fact]
     public void IgnoresUnknownOption()
     {
         Parse(new TransferOption("blub", "16"));
-        Assert.AreEqual(512, options.BlockSize);
-        Assert.IsFalse(options.IncludesBlockSizeOption);
+        Assert.Equal(512, options.BlockSize);
+        Assert.False(options.IncludesBlockSizeOption);
     }
 
-    [Test]
+    [Fact]
     public void IgnoresInvalidValue()
     {
         Parse(new TransferOption("blksize", "not-a-number"));
-        Assert.AreEqual(512, options.BlockSize);
-        Assert.IsFalse(options.IncludesBlockSizeOption);
+        Assert.Equal(512, options.BlockSize);
+        Assert.False(options.IncludesBlockSizeOption);
     }
 
-    [Test]
+    [Fact]
     public void AcceptsMinBlocksize()
     {
         Parse(new TransferOption("blksize", "8"));
-        Assert.IsTrue(options.IncludesBlockSizeOption);
+        Assert.True(options.IncludesBlockSizeOption);
 
         Parse(new TransferOption("blksize", "7"));
-        Assert.IsFalse(options.IncludesBlockSizeOption);
+        Assert.False(options.IncludesBlockSizeOption);
     }
 
-    [Test]
+    [Fact]
     public void AcceptsMaxBlocksize()
     {
         Parse(new TransferOption("blksize", "65464"));
-        Assert.IsTrue(options.IncludesBlockSizeOption);
+        Assert.True(options.IncludesBlockSizeOption);
 
         Parse(new TransferOption("blksize", "65465"));
-        Assert.IsFalse(options.IncludesBlockSizeOption);
+        Assert.False(options.IncludesBlockSizeOption);
     }
 
     private void Parse(TransferOption option)

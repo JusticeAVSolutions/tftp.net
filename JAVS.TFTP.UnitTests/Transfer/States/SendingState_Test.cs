@@ -1,44 +1,41 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
 
 namespace Tftp.Net.UnitTests.Transfer.States;
 
-[TestFixture]
-internal class SendingState_Test
+public class SendingState_Test
 {
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public SendingState_Test()
     {
         transfer = new TransferStub(new MemoryStream(new byte[5000]));
         transfer.SetState(new Sending());
     }
 
-    [Test]
+    [Fact]
     public void SendsPacket()
     {
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Data)));
+        Assert.True(transfer.CommandWasSent(typeof(Data)));
     }
 
-    [Test]
+    [Fact]
     public void ResendsPacket()
     {
         TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
         transferWithLowTimeout.RetryTimeout = new TimeSpan(0);
         transferWithLowTimeout.SetState(new Sending());
 
-        Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(Data)));
+        Assert.True(transferWithLowTimeout.CommandWasSent(typeof(Data)));
         transferWithLowTimeout.SentCommands.Clear();
 
         transferWithLowTimeout.OnTimer();
-        Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(Data)));
+        Assert.True(transferWithLowTimeout.CommandWasSent(typeof(Data)));
     }
 
-    [Test]
+    [Fact]
     public void TimeoutWhenNoAnswerIsReceivedAndRetryCountIsExceeded()
     {
         TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
@@ -47,32 +44,32 @@ internal class SendingState_Test
         transferWithLowTimeout.SetState(new Sending());
 
         transferWithLowTimeout.OnTimer();
-        Assert.IsFalse(transferWithLowTimeout.HadNetworkTimeout);
+        Assert.False(transferWithLowTimeout.HadNetworkTimeout);
         transferWithLowTimeout.OnTimer();
-        Assert.IsTrue(transferWithLowTimeout.HadNetworkTimeout);
+        Assert.True(transferWithLowTimeout.HadNetworkTimeout);
     }
 
-    [Test]
+    [Fact]
     public void HandlesAcknowledgment()
     {
         transfer.SentCommands.Clear();
-        Assert.IsFalse(transfer.CommandWasSent(typeof(Data)));
+        Assert.False(transfer.CommandWasSent(typeof(Data)));
 
         transfer.OnCommand(new Acknowledgement(1));
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Data)));
+        Assert.True(transfer.CommandWasSent(typeof(Data)));
     }
 
-    [Test]
+    [Fact]
     public void IncreasesBlockCountWithEachAcknowledgement()
     {
-        Assert.AreEqual(1, (transfer.SentCommands.Last() as Data).BlockNumber);
+        Assert.Equal(1, (transfer.SentCommands.Last() as Data).BlockNumber);
 
         transfer.OnCommand(new Acknowledgement(1));
 
-        Assert.AreEqual(2, (transfer.SentCommands.Last() as Data).BlockNumber);
+        Assert.Equal(2, (transfer.SentCommands.Last() as Data).BlockNumber);
     }
 
-    [Test]
+    [Fact]
     public void BlockCountWrapsAroundTo0()
     {
         SetupTransferThatWillWrapAroundBlockCount();
@@ -80,10 +77,10 @@ internal class SendingState_Test
         RunTransferUntilBlockCount(65535);
         transfer.OnCommand(new Acknowledgement(65535));
 
-        Assert.AreEqual(0, (transfer.SentCommands.Last() as Data).BlockNumber);
+        Assert.Equal(0, (transfer.SentCommands.Last() as Data).BlockNumber);
     }
 
-    [Test]
+    [Fact]
     public void BlockCountWrapsAroundTo1()
     {
         SetupTransferThatWillWrapAroundBlockCount();
@@ -92,54 +89,54 @@ internal class SendingState_Test
         RunTransferUntilBlockCount(65535);
         transfer.OnCommand(new Acknowledgement(65535));
 
-        Assert.AreEqual(1, (transfer.SentCommands.Last() as Data).BlockNumber);
+        Assert.Equal(1, (transfer.SentCommands.Last() as Data).BlockNumber);
     }
 
-    [Test]
+    [Fact]
     public void IgnoresWrongAcknowledgment()
     {
         transfer.SentCommands.Clear();
-        Assert.IsFalse(transfer.CommandWasSent(typeof(Data)));
+        Assert.False(transfer.CommandWasSent(typeof(Data)));
 
         transfer.OnCommand(new Acknowledgement(0));
-        Assert.IsFalse(transfer.CommandWasSent(typeof(Data)));
+        Assert.False(transfer.CommandWasSent(typeof(Data)));
     }
 
-    [Test]
+    [Fact]
     public void RaisesProgress()
     {
         bool onProgressWasCalled = false;
         transfer.OnProgress += delegate(ITftpTransfer t, TftpTransferProgress progress)
         {
-            Assert.AreEqual(transfer, t);
-            Assert.IsTrue(progress.TransferredBytes > 0);
+            Assert.Equal(transfer, t);
+            Assert.True(progress.TransferredBytes > 0);
             onProgressWasCalled = true;
         };
 
-        Assert.IsFalse(onProgressWasCalled);
+        Assert.False(onProgressWasCalled);
         transfer.OnCommand(new Acknowledgement(1));
-        Assert.IsTrue(onProgressWasCalled);
+        Assert.True(onProgressWasCalled);
     }
 
-    [Test]
+    [Fact]
     public void CanCancel()
     {
         transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.True(transfer.CommandWasSent(typeof(Error)));
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void HandlesError()
     {
         bool onErrorWasCalled = false;
         transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error) { onErrorWasCalled = true; };
 
-        Assert.IsFalse(onErrorWasCalled);
+        Assert.False(onErrorWasCalled);
         transfer.OnCommand(new Error(123, "Test Error"));
-        Assert.IsTrue(onErrorWasCalled);
+        Assert.True(onErrorWasCalled);
 
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.IsType<Closed>(transfer.State);
     }
 
     private void SetupTransferThatWillWrapAroundBlockCount()

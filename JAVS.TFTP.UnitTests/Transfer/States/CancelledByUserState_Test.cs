@@ -1,29 +1,26 @@
-﻿using NUnit.Framework;
-using Tftp.Net.Transfer.States;
+﻿using Tftp.Net.Transfer.States;
 
 namespace Tftp.Net.UnitTests;
 
-[TestFixture]
-internal class CancelledByUserState_Test
+public class CancelledByUserState_Test
 {
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public CancelledByUserState_Test()
     {
         transfer = new TransferStub();
         transfer.SetState(new CancelledByUser(TftpErrorPacket.IllegalOperation));
     }
 
-    [Test]
+    [Fact]
     public void SendsErrorToClient()
     {
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
+        Assert.True(transfer.CommandWasSent(typeof(Error)));
     }
 
-    [Test]
+    [Fact]
     public void TransitionsToClosedState()
     {
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.IsType<Closed>(transfer.State);
     }
 }

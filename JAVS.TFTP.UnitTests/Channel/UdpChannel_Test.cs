@@ -1,30 +1,26 @@
 ﻿using System;
 using Tftp.Net.Channel;
 using System.Net.Sockets;
-using NUnit.Framework;
 using System.Net;
 using System.Threading;
 
 namespace Tftp.Net.UnitTests;
 
-[TestFixture]
-internal class UdpChannel_Test
+public class UdpChannel_Test : IDisposable
 {
     private UdpChannel tested;
 
-    [SetUp]
-    public void Setup()
+    public UdpChannel_Test()
     {
         tested = new UdpChannel(new UdpClient(0));
     }
 
-    [TearDown]
-    public void Teardown()
+    public void Dispose()
     {
         tested.Dispose();
     }
 
-    [Test]
+    [Fact]
     public void SendsRealUdpPackets()
     {
         var remote = OpenRemoteUdpClient();
@@ -36,13 +32,13 @@ internal class UdpChannel_Test
         AssertBytesReceived(remote, TimeSpan.FromMilliseconds(500));
     }
 
-    [Test]
+    [Fact]
     public void DeniesSendingOnClosedConnections()
     {
         Assert.Throws<InvalidOperationException>(() => tested.Send(new Acknowledgement(1)));
     }
 
-    [Test]
+    [Fact]
     public void DeniesSendingWhenNoRemoteAddressIsSet()
     {
         tested.Open();

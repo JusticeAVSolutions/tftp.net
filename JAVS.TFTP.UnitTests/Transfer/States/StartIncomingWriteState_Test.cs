@@ -1,59 +1,51 @@
 ﻿using System.Linq;
-using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
 
 namespace Tftp.Net.UnitTests.Transfer.States;
 
-[TestFixture]
-internal class StartIncomingWriteState_Test
+public class StartIncomingWriteState_Test
 {
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public StartIncomingWriteState_Test()
     {
         transfer = new TransferStub();
         transfer.SetState(new StartIncomingWrite(new TransferOption[0]));
     }
 
-    [TearDown]
-    public void Teardown()
-    {
-    }
-
-    [Test]
+    [Fact]
     public void CanCancel()
     {
         transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.True(transfer.CommandWasSent(typeof(Error)));
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void IgnoresCommands()
     {
         transfer.OnCommand(new Error(5, "Hallo Welt"));
-        Assert.IsInstanceOf<StartIncomingWrite>(transfer.State);
+        Assert.IsType<StartIncomingWrite>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void CanStartWithoutOptions()
     {
         transfer.Start(new MemoryStream(new byte[50000]));
 
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
-        Assert.IsInstanceOf<AcknowledgeWriteRequest>(transfer.State);
+        Assert.True(transfer.CommandWasSent(typeof(Acknowledgement)));
+        Assert.IsType<AcknowledgeWriteRequest>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void CanStartWithOptions()
     {
         transfer.SetState(new StartIncomingWrite(new TransferOption[] { new TransferOption("blksize", "999") }));
-        Assert.AreEqual(999, transfer.BlockSize);
+        Assert.Equal(999, transfer.BlockSize);
         transfer.Start(new MemoryStream(new byte[50000]));
         OptionAcknowledgement cmd = (OptionAcknowledgement)transfer.SentCommands.Last();
         cmd.Options.Contains(new TransferOption("blksize", "999"));
-        Assert.IsInstanceOf<SendOptionAcknowledgementForWriteRequest>(transfer.State);
+        Assert.IsType<SendOptionAcknowledgementForWriteRequest>(transfer.State);
     }
 }

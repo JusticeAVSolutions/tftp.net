@@ -1,59 +1,57 @@
-﻿using NUnit.Framework;
-using Tftp.Net.Transfer;
+﻿using Tftp.Net.Transfer;
 
 namespace Tftp.Net.UnitTests.TransferOptions;
 
-[TestFixture]
-internal class TimeoutIntervalOption_Test
+public class TimeoutIntervalOption_Test
 {
     private TransferOptionSet options;
 
-    [Test]
+    [Fact]
     public void AcceptsValidTimeout()
     {
         Parse(new TransferOption("timeout", "10"));
-        Assert.IsTrue(options.IncludesTimeoutOption);
-        Assert.AreEqual(10, options.Timeout);
+        Assert.True(options.IncludesTimeoutOption);
+        Assert.Equal(10, options.Timeout);
     }
 
-    [Test]
+    [Fact]
     public void AcceptsMinTimeout()
     {
         Parse(new TransferOption("timeout", "1"));
-        Assert.IsTrue(options.IncludesTimeoutOption);
-        Assert.AreEqual(1, options.Timeout);
+        Assert.True(options.IncludesTimeoutOption);
+        Assert.Equal(1, options.Timeout);
     }
 
-    [Test]
+    [Fact]
     public void AcceptsMaxTimeout()
     {
         Parse(new TransferOption("timeout", "255"));
-        Assert.IsTrue(options.IncludesTimeoutOption);
-        Assert.AreEqual(255, options.Timeout);
+        Assert.True(options.IncludesTimeoutOption);
+        Assert.Equal(255, options.Timeout);
     }
 
-    [Test]
+    [Fact]
     public void RejectsTimeoutTooLow()
     {
         Parse(new TransferOption("timeout", "0"));
-        Assert.IsFalse(options.IncludesTimeoutOption);
-        Assert.AreEqual(5, options.Timeout);
+        Assert.False(options.IncludesTimeoutOption);
+        Assert.Equal(5, options.Timeout);
     }
 
-    [Test]
+    [Fact]
     public void RejectsTimeoutTooHigh()
     {
         Parse(new TransferOption("timeout", "256"));
-        Assert.IsFalse(options.IncludesTimeoutOption);
-        Assert.AreEqual(5, options.Timeout);
+        Assert.False(options.IncludesTimeoutOption);
+        Assert.Equal(5, options.Timeout);
     }
 
-    [Test]
+    [Fact]
     public void RejectsNonIntegerTimeout()
     {
         Parse(new TransferOption("timeout", "blub"));
-        Assert.IsFalse(options.IncludesTimeoutOption);
-        Assert.AreEqual(5, options.Timeout);
+        Assert.False(options.IncludesTimeoutOption);
+        Assert.Equal(5, options.Timeout);
     }
 
     private void Parse(TransferOption option)

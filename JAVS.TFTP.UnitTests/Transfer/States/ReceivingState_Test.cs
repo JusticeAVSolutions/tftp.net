@@ -1,59 +1,56 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
 
 namespace Tftp.Net.UnitTests.Transfer.States;
 
-[TestFixture]
-internal class ReceivingState_Test
+public class ReceivingState_Test
 {
     private MemoryStream ms;
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public ReceivingState_Test()
     {
         ms = new MemoryStream();
         transfer = new TransferStub(ms);
         transfer.SetState(new Receiving());
     }
 
-    [Test]
+    [Fact]
     public void ReceivesPacket()
     {
         transfer.OnCommand(new Data(1, new byte[100]));
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
-        Assert.AreEqual(100, ms.Length);
+        Assert.True(transfer.CommandWasSent(typeof(Acknowledgement)));
+        Assert.Equal(100, ms.Length);
     }
 
-    [Test]
+    [Fact]
     public void SendsAcknowledgement()
     {
         transfer.OnCommand(new Data(1, new byte[100]));
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
+        Assert.True(transfer.CommandWasSent(typeof(Acknowledgement)));
     }
 
-    [Test]
+    [Fact]
     public void IgnoresWrongPackets()
     {
         transfer.OnCommand(new Data(2, new byte[100]));
-        Assert.IsFalse(transfer.CommandWasSent(typeof(Acknowledgement)));
-        Assert.AreEqual(0, ms.Length);
+        Assert.False(transfer.CommandWasSent(typeof(Acknowledgement)));
+        Assert.Equal(0, ms.Length);
     }
 
-    [Test]
+    [Fact]
     public void BlockCounterWrapsAroundToZero()
     {
         TransferUntilBlockCounterWrapIsAboutToWrap();
 
         transfer.OnCommand(new Data(0, new byte[1]));
 
-        Assert.AreEqual(0, (transfer.SentCommands.Last() as Acknowledgement).BlockNumber);
+        Assert.Equal(0, (transfer.SentCommands.Last() as Acknowledgement).BlockNumber);
     }
 
-    [Test]
+    [Fact]
     public void BlockCounterWrapsAroundToOne()
     {
         transfer.BlockCounterWrapping = BlockCounterWrapAround.ToOne;
@@ -61,7 +58,7 @@ internal class ReceivingState_Test
 
         transfer.OnCommand(new Data(1, new byte[1]));
 
-        Assert.AreEqual(1, (transfer.SentCommands.Last() as Acknowledgement).BlockNumber);
+        Assert.Equal(1, (transfer.SentCommands.Last() as Acknowledgement).BlockNumber);
     }
 
     private void TransferUntilBlockCounterWrapIsAboutToWrap()
@@ -71,61 +68,61 @@ internal class ReceivingState_Test
             transfer.OnCommand(new Data((ushort)i, new byte[1]));
     }
 
-    [Test]
+    [Fact]
     public void RaisesFinished()
     {
         bool onFinishedWasCalled = false;
         transfer.OnFinished += delegate(ITftpTransfer t)
         {
-            Assert.AreEqual(transfer, t);
+            Assert.Equal(transfer, t);
             onFinishedWasCalled = true;
         };
 
-        Assert.IsFalse(onFinishedWasCalled);
+        Assert.False(onFinishedWasCalled);
         transfer.OnCommand(new Data(1, new byte[100]));
-        Assert.IsTrue(onFinishedWasCalled);
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.True(onFinishedWasCalled);
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void RaisesProgress()
     {
         bool onProgressWasCalled = false;
         transfer.OnProgress += delegate(ITftpTransfer t, TftpTransferProgress progress)
         {
-            Assert.AreEqual(transfer, t);
-            Assert.IsTrue(progress.TransferredBytes > 0);
+            Assert.Equal(transfer, t);
+            Assert.True(progress.TransferredBytes > 0);
             onProgressWasCalled = true;
         };
 
-        Assert.IsFalse(onProgressWasCalled);
+        Assert.False(onProgressWasCalled);
         transfer.OnCommand(new Data(1, new byte[1000]));
-        Assert.IsTrue(onProgressWasCalled);
-        Assert.IsInstanceOf<Receiving>(transfer.State);
+        Assert.True(onProgressWasCalled);
+        Assert.IsType<Receiving>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void CanCancel()
     {
         transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.True(transfer.CommandWasSent(typeof(Error)));
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void HandlesError()
     {
         bool onErrorWasCalled = false;
         transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error) { onErrorWasCalled = true; };
 
-        Assert.IsFalse(onErrorWasCalled);
+        Assert.False(onErrorWasCalled);
         transfer.OnCommand(new Error(123, "Test Error"));
-        Assert.IsTrue(onErrorWasCalled);
+        Assert.True(onErrorWasCalled);
 
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void TimeoutWhenNoDataIsReceivedAndRetryCountIsExceeded()
     {
         TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
@@ -134,8 +131,8 @@ internal class ReceivingState_Test
         transferWithLowTimeout.SetState(new Receiving());
 
         transferWithLowTimeout.OnTimer();
-        Assert.IsFalse(transferWithLowTimeout.HadNetworkTimeout);
+        Assert.False(transferWithLowTimeout.HadNetworkTimeout);
         transferWithLowTimeout.OnTimer();
-        Assert.IsTrue(transferWithLowTimeout.HadNetworkTimeout);
+        Assert.True(transferWithLowTimeout.HadNetworkTimeout);
     }
 }

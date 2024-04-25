@@ -1,39 +1,37 @@
 ﻿using System;
-using NUnit.Framework;
 
 namespace Tftp.Net.UnitTests.TransferOptions;
 
-[TestFixture]
-internal class TransferOption_Test
+public class TransferOption_Test
 {
-    [Test]
+    [Fact]
     public void CanBeCreatedWithValidNameAndValue()
     {
         TransferOption option = new TransferOption("Test", "Hallo Welt");
-        Assert.AreEqual("Test", option.Name);
-        Assert.AreEqual("Hallo Welt", option.Value);
-        Assert.IsFalse(option.IsAcknowledged);
+        Assert.Equal("Test", option.Name);
+        Assert.Equal("Hallo Welt", option.Value);
+        Assert.False(option.IsAcknowledged);
     }
 
-    [Test]
+    [Fact]
     public void RejectsInvalidName1()
     {
         Assert.Throws<ArgumentException>(() => new TransferOption("", "Hallo Welt"));
     }
 
-    [Test]
+    [Fact]
     public void RejectsInvalidName2()
     {
         Assert.Throws<ArgumentException>(() => new TransferOption(null, "Hallo Welt"));
     }
 
-    [Test]
+    [Fact]
     public void RejectsInvalidValue()
     {
         Assert.Throws<ArgumentNullException>(() => new TransferOption("Test", null));
     }
 
-    [Test]
+    [Fact]
     public void AcceptsEmptyValue()
     {
         //Must not throw any exceptions

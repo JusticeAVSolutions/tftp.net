@@ -1,26 +1,24 @@
 ﻿using System;
-using NUnit.Framework;
 
 namespace Tftp.Net.UnitTests;
 
-[TestFixture]
-internal class ErrorFromRemoteEndpoint_Test
+public class ErrorFromRemoteEndpoint_Test
 {
-    [Test]
+    [Fact]
     public void CanBeCreatedWithValidValues()
     {
         TftpErrorPacket error = new TftpErrorPacket(123, "Test Message");
-        Assert.AreEqual(123, error.ErrorCode);
-        Assert.AreEqual("Test Message", error.ErrorMessage);
+        Assert.Equal(123, error.ErrorCode);
+        Assert.Equal("Test Message", error.ErrorMessage);
     }
 
-    [Test]
+    [Fact]
     public void RejectsNullMessage()
     {
         Assert.Throws<ArgumentException>(() => new TftpErrorPacket(123, null));
     }
 
-    [Test]
+    [Fact]
     public void RejectsEmptyMessage()
     {
         Assert.Throws<ArgumentException>(() => new TftpErrorPacket(123, ""));

@@ -1,83 +1,75 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
 
 namespace Tftp.Net.UnitTests;
 
-[TestFixture]
-internal class StartIncomingReadState_Test
+public class StartIncomingReadState_Test
 {
     private TransferStub transfer;
 
-    [SetUp]
-    public void Setup()
+    public StartIncomingReadState_Test()
     {
         transfer = new TransferStub();
         transfer.SetState(new StartIncomingRead(new TransferOption[] { new TransferOption("tsize", "0") }));
     }
 
-    [TearDown]
-    public void Teardown()
-    {
-    }
-
-    [Test]
+    [Fact]
     public void CanCancel()
     {
         transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
-        Assert.IsInstanceOf<Closed>(transfer.State);
+        Assert.True(transfer.CommandWasSent(typeof(Error)));
+        Assert.IsType<Closed>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void IgnoresCommands()
     {
         transfer.OnCommand(new Error(5, "Hallo Welt"));
-        Assert.IsInstanceOf<StartIncomingRead>(transfer.State);
+        Assert.IsType<StartIncomingRead>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void CanStartWithoutOptions()
     {
         transfer.SetState(new StartIncomingRead(new TransferOption[0]));
         transfer.Start(new MemoryStream(new byte[50000]));
-        Assert.IsInstanceOf<Sending>(transfer.State);
+        Assert.IsType<Sending>(transfer.State);
     }
 
-    [Test]
+    [Fact]
     public void CanStartWithOptions()
     {
         //Simulate that we got a request for a option
         transfer.SetState(new StartIncomingRead(new TransferOption[] { new TransferOption("blksize", "999") }));
-        Assert.AreEqual(999, transfer.BlockSize);
+        Assert.Equal(999, transfer.BlockSize);
         transfer.Start(new MemoryStream(new byte[50000]));
-        Assert.IsInstanceOf<SendOptionAcknowledgementForReadRequest>(transfer.State);
+        Assert.IsType<SendOptionAcknowledgementForReadRequest>(transfer.State);
         OptionAcknowledgement cmd = (OptionAcknowledgement)transfer.SentCommands.Last();
         cmd.Options.Contains(new TransferOption("blksize", "999"));
     }
 
-    [Test]
+    [Fact]
     public void FillsTransferSizeIfPossible()
     {
         transfer.ExpectedSize = 123;
         transfer.Start(new StreamThatThrowsExceptionWhenReadingLength());
-        Assert.IsTrue(WasTransferSizeOptionRequested());
+        Assert.True(WasTransferSizeOptionRequested());
     }
 
-    [Test]
+    [Fact]
     public void FillsTransferSizeFromStreamIfPossible()
     {
         transfer.Start(new MemoryStream(new byte[] { 1 }));
-        Assert.IsTrue(WasTransferSizeOptionRequested());
+        Assert.True(WasTransferSizeOptionRequested());
     }
 
-    [Test]
+    [Fact]
     public void DoesNotFillTransferSizeWhenNotAvailable()
     {
         transfer.Start(new StreamThatThrowsExceptionWhenReadingLength());
-        Assert.IsFalse(WasTransferSizeOptionRequested());
+        Assert.False(WasTransferSizeOptionRequested());
     }
 
     private bool WasTransferSizeOptionRequested()

@@ -1,17 +1,15 @@
-﻿using NUnit.Framework;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Net;
 
 namespace Tftp.Net.UnitTests;
 
-[TestFixture]
-internal class TftpClientServer_Test
+public class TftpClientServer_Test
 {
     public byte[] DemoData = { 1, 2, 3 };
     private bool TransferHasFinished = false;
 
-    [Test]
+    [Fact]
     public void ClientsReadsFromServer()
     {
         using (TftpServer server = new TftpServer(new IPEndPoint(IPAddress.Loopback, 69)))
@@ -27,7 +25,7 @@ internal class TftpClientServer_Test
                 transfer.Start(ms);
 
                 Thread.Sleep(500);
-                Assert.IsTrue(TransferHasFinished);
+                Assert.True(TransferHasFinished);
             }
         }
     }

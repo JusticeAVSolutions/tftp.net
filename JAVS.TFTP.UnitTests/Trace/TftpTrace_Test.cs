@@ -1,11 +1,10 @@
-﻿using System.Diagnostics;
-using NUnit.Framework;
+﻿using System;
+using System.Diagnostics;
 using Tftp.Net.Trace;
 
 namespace Tftp.Net.UnitTests.Trace;
 
-[TestFixture]
-internal class TftpTrace_Test
+public class TftpTrace_Test : IDisposable
 {
     private class TraceListenerMock : TraceListener
     {
@@ -24,34 +23,32 @@ internal class TftpTrace_Test
 
     private TraceListenerMock listener;
 
-    [SetUp]
-    public void Setup()
+    public TftpTrace_Test()
     {
         listener = new TraceListenerMock();
         System.Diagnostics.Trace.Listeners.Add(listener);
     }
 
-    [TearDown]
-    public void Teardown()
+    public void Dispose()
     {
         System.Diagnostics.Trace.Listeners.Remove(listener);
         TftpTrace.Enabled = false;
     }
 
-    [Test]
+    [Fact]
     public void CallsTrace()
     {
         TftpTrace.Enabled = true;
-        Assert.IsFalse(listener.WriteWasCalled);
+        Assert.False(listener.WriteWasCalled);
         TftpTrace.Trace("Test", new TransferStub());
-        Assert.IsTrue(listener.WriteWasCalled);
+        Assert.True(listener.WriteWasCalled);
     }
 
-    [Test]
+    [Fact]
     public void DoesNotWriteWhenDisabled()
     {
         TftpTrace.Enabled = false;
         TftpTrace.Trace("Test", new TransferStub());
-        Assert.IsFalse(listener.WriteWasCalled);
+        Assert.False(listener.WriteWasCalled);
     }
 }

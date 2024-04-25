@@ -1,33 +1,31 @@
-﻿using NUnit.Framework;
-using Tftp.Net.Transfer;
+﻿using Tftp.Net.Transfer;
 
 namespace Tftp.Net.UnitTests.TransferOptions;
 
-[TestFixture]
-internal class TransferSizeOption_Test
+public class TransferSizeOption_Test
 {
     private TransferOptionSet options;
 
-    [Test]
+    [Fact]
     public void ReadsTransferSize()
     {
         Parse(new TransferOption("tsize", "0"));
-        Assert.IsTrue(options.IncludesTransferSizeOption);
-        Assert.AreEqual(0, options.TransferSize);
+        Assert.True(options.IncludesTransferSizeOption);
+        Assert.Equal(0, options.TransferSize);
     }
 
-    [Test]
+    [Fact]
     public void RejectsNegativeTransferSize()
     {
         Parse(new TransferOption("tsize", "-1"));
-        Assert.IsFalse(options.IncludesTransferSizeOption);
+        Assert.False(options.IncludesTransferSizeOption);
     }
 
-    [Test]
+    [Fact]
     public void RejectsNonIntegerTransferSize()
     {
         Parse(new TransferOption("tsize", "abc"));
-        Assert.IsFalse(options.IncludesTransferSizeOption);
+        Assert.False(options.IncludesTransferSizeOption);
     }
 
     private void Parse(TransferOption option)
