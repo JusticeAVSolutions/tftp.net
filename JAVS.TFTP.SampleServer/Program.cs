@@ -1,97 +1,88 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using Tftp.Net;
 
-namespace Tftp.Net.SampleServer;
+var serverDirectory = Environment.CurrentDirectory;
 
-internal static class Program
+Console.WriteLine("Running TFTP server for directory: " + serverDirectory);
+Console.WriteLine();
+Console.WriteLine("Press any key to close the server.");
+
+using (var server = new TftpServer())
 {
-    private static string ServerDirectory;
+    server.OnReadRequest += OnReadRequest;
+    server.OnWriteRequest += OnWriteRequest;
+    server.Start();
+    Console.Read();
+}
 
-    private static void Main(string[] args)
+void OnWriteRequest(ITftpTransfer transfer, EndPoint client)
+{
+    var file = Path.Combine(serverDirectory, transfer.Filename);
+
+    if (File.Exists(file))
     {
-        ServerDirectory = Environment.CurrentDirectory;
-
-        Console.WriteLine("Running TFTP server for directory: " + ServerDirectory);
-        Console.WriteLine();
-        Console.WriteLine("Press any key to close the server.");
-
-        using (var server = new TftpServer())
-        {
-            server.OnReadRequest += server_OnReadRequest;
-            server.OnWriteRequest += server_OnWriteRequest;
-            server.Start();
-            Console.Read();
-        }
+        CancelTransfer(transfer, TftpErrorPacket.FileAlreadyExists);
     }
-
-    private static void server_OnWriteRequest(ITftpTransfer transfer, EndPoint client)
+    else
     {
-        var file = Path.Combine(ServerDirectory, transfer.Filename);
-
-        if (File.Exists(file))
-        {
-            CancelTransfer(transfer, TftpErrorPacket.FileAlreadyExists);
-        }
-        else
-        {
-            OutputTransferStatus(transfer, "Accepting write request from " + client);
-            StartTransfer(transfer, new FileStream(file, FileMode.CreateNew));
-        }
+        OutputTransferStatus(transfer, "Accepting write request from " + client);
+        StartTransfer(transfer, new FileStream(file, FileMode.CreateNew));
     }
+}
 
-    private static void server_OnReadRequest(ITftpTransfer transfer, EndPoint client)
+void OnReadRequest(ITftpTransfer transfer, EndPoint client)
+{
+    var path = Path.Combine(serverDirectory, transfer.Filename);
+    var file = new FileInfo(path);
+
+    //Is the file within the server directory?
+    if (!file.FullName.StartsWith(serverDirectory, StringComparison.InvariantCultureIgnoreCase))
     {
-        var path = Path.Combine(ServerDirectory, transfer.Filename);
-        var file = new FileInfo(path);
-
-        //Is the file within the server directory?
-        if (!file.FullName.StartsWith(ServerDirectory, StringComparison.InvariantCultureIgnoreCase))
-        {
-            CancelTransfer(transfer, TftpErrorPacket.AccessViolation);
-        }
-        else if (!file.Exists)
-        {
-            CancelTransfer(transfer, TftpErrorPacket.FileNotFound);
-        }
-        else
-        {
-            OutputTransferStatus(transfer, "Accepting request from " + client);
-            StartTransfer(transfer, new FileStream(file.FullName, FileMode.Open, FileAccess.Read));
-        }
+        CancelTransfer(transfer, TftpErrorPacket.AccessViolation);
     }
-
-    private static void StartTransfer(ITftpTransfer transfer, Stream stream)
+    else if (!file.Exists)
     {
-        transfer.OnProgress += transfer_OnProgress;
-        transfer.OnError += transfer_OnError;
-        transfer.OnFinished += transfer_OnFinished;
-        transfer.Start(stream);
+        CancelTransfer(transfer, TftpErrorPacket.FileNotFound);
     }
-
-    private static void CancelTransfer(ITftpTransfer transfer, TftpErrorPacket reason)
+    else
     {
-        OutputTransferStatus(transfer, "Cancelling transfer: " + reason.ErrorMessage);
-        transfer.Cancel(reason);
+        OutputTransferStatus(transfer, "Accepting request from " + client);
+        StartTransfer(transfer, new FileStream(file.FullName, FileMode.Open, FileAccess.Read));
     }
+}
 
-    private static void transfer_OnError(ITftpTransfer transfer, TftpTransferError error)
-    {
-        OutputTransferStatus(transfer, "Error: " + error);
-    }
+void StartTransfer(ITftpTransfer transfer, Stream stream)
+{
+    transfer.OnProgress += OnProgress;
+    transfer.OnError += OnError;
+    transfer.OnFinished += OnFinished;
+    transfer.Start(stream);
+}
 
-    private static void transfer_OnFinished(ITftpTransfer transfer)
-    {
-        OutputTransferStatus(transfer, "Finished");
-    }
+void CancelTransfer(ITftpTransfer transfer, TftpErrorPacket reason)
+{
+    OutputTransferStatus(transfer, "Cancelling transfer: " + reason.ErrorMessage);
+    transfer.Cancel(reason);
+}
 
-    private static void transfer_OnProgress(ITftpTransfer transfer, TftpTransferProgress progress)
-    {
-        OutputTransferStatus(transfer, "Progress " + progress);
-    }
+void OnError(ITftpTransfer transfer, TftpTransferError error)
+{
+    OutputTransferStatus(transfer, "Error: " + error);
+}
 
-    private static void OutputTransferStatus(ITftpTransfer transfer, string message)
-    {
-        Console.WriteLine("[" + transfer.Filename + "] " + message);
-    }
+void OnFinished(ITftpTransfer transfer)
+{
+    OutputTransferStatus(transfer, "Finished");
+}
+
+void OnProgress(ITftpTransfer transfer, TftpTransferProgress progress)
+{
+    OutputTransferStatus(transfer, "Progress " + progress);
+}
+
+void OutputTransferStatus(ITftpTransfer transfer, string message)
+{
+    Console.WriteLine("[" + transfer.Filename + "] " + message);
 }
