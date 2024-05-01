@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using JAVS.TFTP.Trace;
 using JAVS.TFTP.UnitTests.Transfer.States;
 
@@ -9,16 +10,18 @@ public class TftpTrace_Test : IDisposable
 {
     private class TraceListenerMock : TraceListener
     {
-        public bool WriteWasCalled;
+        private volatile int _writeWasCalledInt;
+
+        public bool WriteWasCalled => _writeWasCalledInt == 1;
 
         public override void Write(string message)
         {
-            WriteWasCalled = true;
+            Interlocked.Exchange(ref _writeWasCalledInt, 1);
         }
 
         public override void WriteLine(string message)
         {
-            WriteWasCalled = true;
+            Interlocked.Exchange(ref _writeWasCalledInt, 1);
         }
     }
 
