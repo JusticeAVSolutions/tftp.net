@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 var target = Argument("target", "Default");
 var config = Argument("config", "Release");
 var buildNumber = Argument("buildNumber", "0");
-var fullVersion = $"1.3.1.{buildNumber}";
+var fullVersion = $"2.0.0.{buildNumber}";
 
 Task("Update-Version")
     .Does(() =>
