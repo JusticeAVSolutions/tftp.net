@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace JAVS.TFTP.Transfer;
 
@@ -7,22 +8,24 @@ namespace JAVS.TFTP.Transfer;
 /// </summary>
 internal class SimpleTimer
 {
-    private readonly TimeSpan _timeout;
-    private DateTime _nextTimeout;
+    private readonly long _timeoutTicks;
+    private long _nextTimeoutTicks;
 
     public SimpleTimer(TimeSpan timeout)
     {
-        _timeout = timeout;
+        _timeoutTicks = timeout.Ticks;
         Restart();
     }
 
     public void Restart()
     {
-        _nextTimeout = DateTime.Now.Add(_timeout);
+        var ticks = Stopwatch.GetTimestamp();
+        _nextTimeoutTicks = ticks + _timeoutTicks;
     }
 
     public bool IsTimeout()
     {
-        return DateTime.Now >= _nextTimeout;
+        var ticks = Stopwatch.GetTimestamp();
+        return ticks >= _nextTimeoutTicks;
     }
 }
