@@ -18,6 +18,7 @@ public class SimpleTimer_Test
     [Fact(Skip = "Ignore flaky timer tests for now")]
     public void RestartingResetsTimeout()
     {
+        Thread.Sleep(10);
         var timer = new SimpleTimer(new TimeSpan(500));
         Assert.False(timer.IsTimeout());
         Thread.Sleep(1000);

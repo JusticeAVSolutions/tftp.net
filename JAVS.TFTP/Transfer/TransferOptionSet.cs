@@ -6,7 +6,7 @@ namespace JAVS.TFTP.Transfer;
 internal class TransferOptionSet
 {
     public const int DEFAULT_BLOCKSIZE = 512;
-    public const int DEFAULT_TIMEOUT_SECS = 5;
+    public const int DEFAULT_TIMEOUT_SECS = 10;
 
     public bool IncludesBlockSizeOption;
     public int BlockSize = DEFAULT_BLOCKSIZE;
