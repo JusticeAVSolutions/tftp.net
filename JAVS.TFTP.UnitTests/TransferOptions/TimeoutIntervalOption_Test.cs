@@ -36,7 +36,7 @@ public class TimeoutIntervalOption_Test
     {
         Parse(new TransferOption("timeout", "0"));
         Assert.False(_options.IncludesTimeoutOption);
-        Assert.Equal(5, _options.Timeout);
+        Assert.Equal(10, _options.Timeout);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class TimeoutIntervalOption_Test
     {
         Parse(new TransferOption("timeout", "256"));
         Assert.False(_options.IncludesTimeoutOption);
-        Assert.Equal(5, _options.Timeout);
+        Assert.Equal(10, _options.Timeout);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class TimeoutIntervalOption_Test
     {
         Parse(new TransferOption("timeout", "blub"));
         Assert.False(_options.IncludesTimeoutOption);
-        Assert.Equal(5, _options.Timeout);
+        Assert.Equal(10, _options.Timeout);
     }
 
     private void Parse(TransferOption option)
